@@ -1,10 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SelectSearch from "react-select-search";
 
-function CourseCard({ courseData, uniId, levelId, selectionName }) {
+const CourseCard = ({ courseData, uniId, levelId, selectionName }) => {
   const [options, setOptions] = useState();
   const navigate = useNavigate();
+
+  const goToEnqPage = useCallback(
+    (intake) => {
+      navigate("/enquiry/create", {
+        state: {
+          uniId,
+          courseId: courseData.id,
+          levelId,
+          intake,
+        },
+      });
+    },
+    [navigate, uniId, courseData.id, levelId]
+  );
 
   useEffect(() => {
     if (courseData.intake?.length) {
@@ -51,6 +65,7 @@ function CourseCard({ courseData, uniId, levelId, selectionName }) {
           };
         }
       });
+
       const data = (
         <div className="courseCardSelect">
           <SelectSearch
@@ -67,18 +82,8 @@ function CourseCard({ courseData, uniId, levelId, selectionName }) {
       const options = <p className="dengor">No intake found for this course</p>;
       setOptions(options);
     }
-  }, [courseData.intake]);
+  }, [courseData.intake, goToEnqPage, selectionName]);
 
-  const goToEnqPage = function (intake) {
-    navigate("/enquiry/create", {
-      state: {
-        uniId,
-        courseId: courseData.id,
-        levelId,
-        intake,
-      },
-    });
-  };
   return (
     <div className="col-md-4 text-center mb-3">
       <div className="card courseCard">
@@ -98,6 +103,6 @@ function CourseCard({ courseData, uniId, levelId, selectionName }) {
       </div>
     </div>
   );
-}
+};
 
 export default CourseCard;

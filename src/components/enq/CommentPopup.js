@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from "react";
-import UiModal from "../UI/UiModal";
-import LoadingData from "../UI/LoadingData";
-import { ajaxCallWithHeaderOnly } from "../../helpers/ajaxCall";
+import React, { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import CommentSnippet from "./CommentSnippet";
+import UiModal from "../UI/UiModal";
 import AddComment from "./AddComment";
+import LoadingData from "../UI/LoadingData";
+import CommentSnippet from "./CommentSnippet";
+import { ajaxCallWithHeaderOnly } from "../../helpers/ajaxCall";
 
-function CommentPopup(props) {
+const CommentPopup = ({ id, title, onHide }) => {
   const [modalStatus, setModalStatus] = useState({
     showModal: true,
     showHeader: true,
-    headerContent: `Comments for ${props.title}`,
+    headerContent: `Comments for ${title}`,
     bodyContent: <LoadingData />,
     showFooter: true,
     footerContent: null,
@@ -23,9 +23,9 @@ function CommentPopup(props) {
     if (throwErr) throw throwErr;
   }, [throwErr]);
 
-  const getComments = async () => {
+  const getComments =  useCallback(async () => {
     const response = await ajaxCallWithHeaderOnly(
-      `app/getcomment/?ordering=posted&object_id=${props.id}`,
+      `app/getcomment/?ordering=posted&object_id=${id}`,
       {
         Authorization: `Bearer ${authData.accessToken}`,
       },
@@ -44,17 +44,17 @@ function CommentPopup(props) {
       setModalStatus({
         showModal: true,
         showHeader: true,
-        headerContent: `Comments for ${props.title}`,
+        headerContent: `Comments for ${title}`,
         bodyContent: (
           <>
             <h4 className="text-center">No Comments Found</h4>
             <AddComment
-              enqId={props.id}
+              enqId={id}
               refresh={() =>
                 setModalStatus({
                   showModal: true,
                   showHeader: true,
-                  headerContent: `Comments for ${props.title}`,
+                  headerContent: `Comments for ${title}`,
                   bodyContent: <LoadingData />,
                   showFooter: true,
                   footerContent: null,
@@ -95,13 +95,13 @@ function CommentPopup(props) {
               return (
                 <CommentSnippet
                   parentComment={parentComment}
-                  enqId={props.id}
+                  enqId={id}
                   parentId={parentComment.id}
                   refresh={() =>
                     setModalStatus({
                       showModal: true,
                       showHeader: true,
-                      headerContent: `Comments for ${props.title}`,
+                      headerContent: `Comments for ${title}`,
                       bodyContent: <LoadingData />,
                       showFooter: true,
                       footerContent: null,
@@ -113,12 +113,12 @@ function CommentPopup(props) {
             })}
           </ul>
           <AddComment
-            enqId={props.id}
+            enqId={id}
             refresh={() =>
               setModalStatus({
                 showModal: true,
                 showHeader: true,
-                headerContent: `Comments for ${props.title}`,
+                headerContent: `Comments for ${title}`,
                 bodyContent: <LoadingData />,
                 showFooter: true,
                 footerContent: null,
@@ -131,7 +131,7 @@ function CommentPopup(props) {
       setModalStatus({
         showModal: true,
         showHeader: true,
-        headerContent: `Comments for ${props.title}`,
+        headerContent: `Comments for ${title}`,
         bodyContent,
         showFooter: true,
         footerContent: null,
@@ -139,7 +139,8 @@ function CommentPopup(props) {
       });
     }
     return response;
-  };
+  },[authData.accessToken, id, title]);
+  
   useEffect(() => {
     try {
       getComments();
@@ -147,7 +148,7 @@ function CommentPopup(props) {
       setThrowErr({ e, page: "enquiries" });
       return;
     }
-  }, []);
+  }, [getComments]);
 
   useEffect(() => {
     try {
@@ -156,11 +157,11 @@ function CommentPopup(props) {
       setThrowErr({ e, page: "enquiries" });
       return;
     }
-  }, [modalStatus.reset]);
+  }, [getComments, modalStatus.reset]);
 
   return (
     <UiModal
-      setModalStatus={props.onHide}
+      setModalStatus={onHide}
       showStatus={modalStatus.showModal}
       showHeader={modalStatus.showHeader}
       title={modalStatus.headerContent}
@@ -169,6 +170,6 @@ function CommentPopup(props) {
       footerContent={modalStatus.footerContent}
     />
   );
-}
+};
 
 export default CommentPopup;

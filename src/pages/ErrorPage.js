@@ -5,7 +5,7 @@ import { uiAction } from "../store/uiStore";
 import { authAction } from "../store/authStore";
 import { deleteFromLocalStorage } from "../helpers/helperFunctions";
 
-function ErrorPage() {
+const ErrorPage = () => {
   const error = useRouteError();
   const dispatch = useDispatch();
 
@@ -85,8 +85,7 @@ function ErrorPage() {
       <div class="d-flex align-items-center justify-content-center vh-100">
         <div class="text-center">
           <h1 class="display-1 fw-bold">{error?.status} Error Happened</h1>
-          <p class="fs-3">
-          </p>
+          <p class="fs-3"></p>
           <p class="lead">
             Looks like server is offline, If this problem persists for long
             time, Please contact developer
@@ -119,8 +118,7 @@ function ErrorPage() {
       <div class="d-flex align-items-center justify-content-center vh-100">
         <div class="text-center">
           <h1 class="display-1 fw-bold">{error?.status} Error Happened</h1>
-          <p class="fs-3">
-          </p>
+          <p class="fs-3"></p>
           <p class="lead">
             If this problem occur again, Please contact Developer
           </p>
@@ -135,8 +133,7 @@ function ErrorPage() {
     <div class="d-flex align-items-center justify-content-center vh-100">
       <div class="text-center">
         <h1 class="display-1 fw-bold">{error?.status} Error Happened</h1>
-        <p class="fs-3">
-        </p>
+        <p class="fs-3"></p>
         <p class="lead">
           If this problem occur again, Please contact Developer
         </p>
@@ -146,6 +143,6 @@ function ErrorPage() {
       </div>
     </div>
   );
-}
+};
 
 export default ErrorPage;

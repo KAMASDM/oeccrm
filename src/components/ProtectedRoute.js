@@ -9,7 +9,8 @@ import {
 } from "../helpers/helperFunctions";
 import { authAction } from "../store/authStore";
 import LoadingData from "./UI/LoadingData";
-function ProtectedRoute(props) {
+
+const ProtectedRoute = ({ children }) => {
   const dispath = useDispatch();
   const authData = useSelector((state) => state.authStore);
 
@@ -105,14 +106,14 @@ function ProtectedRoute(props) {
       };
       checkAuth();
     }
-  }, [authData.loggedIn]);
-  
+  }, [authData.loggedIn, dispath]);
+
   if (authData.logInOperation === -1) {
     return <LoadingData className="loading-spinner" />;
   } else if (authData.logInOperation === 0) {
     return <Navigate to="/login" />;
   } else if (authData.logInOperation) {
-    return props.children;
+    return children;
   }
 }
 

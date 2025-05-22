@@ -1,15 +1,23 @@
 import React, { useState } from "react";
 import UploadDoc from "./UploadDoc";
 
-function DocumentRow(props) {
+const DocumentRow = ({
+  id,
+  docType,
+  name,
+  document,
+  uploadKey,
+  setRefresherNeeded,
+}) => {
   const [docData, setDocData] = useState({
     show: false,
-    id: props.id,
-    title: props.docType,
-    name: props.name,
-    document: props.document,
-    key: props.uploadKey,
+    id: id,
+    title: docType,
+    name: name,
+    document: document,
+    key: uploadKey,
   });
+
   return (
     <>
       {docData.document ? (
@@ -68,15 +76,15 @@ function DocumentRow(props) {
           changeMode={setDocData}
           name={docData.name}
           title={docData.title}
-          uploadKey={props.uploadKey}
+          uploadKey={uploadKey}
           id={docData.id}
-          setRefresherNeeded={props.setRefresherNeeded}
+          setRefresherNeeded={setRefresherNeeded}
         />
       ) : (
         ""
       )}
     </>
   );
-}
+};
 
 export default DocumentRow;

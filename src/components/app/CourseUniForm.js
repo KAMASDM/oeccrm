@@ -1,10 +1,10 @@
 import React, { useReducer, useState } from "react";
-import SelectionBox from "../UI/Form/SelectionBox";
-import FileUpload from "../UI/Form/FileUpload";
-import { Button, Form } from "react-bootstrap";
-import { ajaxCall } from "../../helpers/ajaxCall";
 import { useDispatch, useSelector } from "react-redux";
+import { Button, Form } from "react-bootstrap";
 import { uiAction } from "../../store/uiStore";
+import FileUpload from "../UI/Form/FileUpload";
+import { ajaxCall } from "../../helpers/ajaxCall";
+import SelectionBox from "../UI/Form/SelectionBox";
 
 const initialState = {
   sop: null,
@@ -16,10 +16,19 @@ const initialState = {
   assignedUser: "",
   status: "",
 };
+
 const reducerFile = (state, action) => {
   return { ...state, [action.type]: action.value };
 };
-function CourseUniForm(props) {
+
+const CourseUniForm = ({
+  appName,
+  clssName,
+  appId,
+  hideModal,
+  country,
+  setRefresherNeeded,
+}) => {
   const [fileData, dispatchFunction] = useReducer(reducerFile, initialState);
   const authData = useSelector((state) => state.authStore);
   const [loadError, setLoadError] = useState({
@@ -27,7 +36,8 @@ function CourseUniForm(props) {
     isSubmitting: false,
   });
   const dispatch = useDispatch();
-  const uploadUniCourseData = async function (appID, e) {
+
+  const uploadUniCourseData = async (appID, e) => {
     e.preventDefault();
     if (
       !fileData.university_interested ||
@@ -78,11 +88,11 @@ function CourseUniForm(props) {
       uiAction.setNotification({
         show: true,
         heading: "Application",
-        msg: `Applied To University For ${props.appName} Student`,
+        msg: `Applied To University For ${appName} Student`,
       })
     );
-    props.hideModal(true);
-    props.setRefresherNeeded(true);
+    hideModal(true);
+    setRefresherNeeded(true);
   };
   const handleChange = (fileName, file) => {
     dispatchFunction({ type: fileName, value: file });
@@ -91,10 +101,10 @@ function CourseUniForm(props) {
   return (
     <Form
       className="row"
-      onSubmit={uploadUniCourseData.bind(null, props.appId)}
+      onSubmit={uploadUniCourseData.bind(null, appId)}
     >
       <SelectionBox
-        groupClass={`mb-3  selectbox ${props.clssName}`}
+        groupClass={`mb-3  selectbox ${clssName}`}
         groupId="uniInterested"
         label="University Interested"
         value={fileData.university_interested}
@@ -105,12 +115,12 @@ function CourseUniForm(props) {
           });
         }}
         name="uniInterested"
-        url={`universitieslists/?country=${props.country}`}
+        url={`universitieslists/?country=${country}`}
         isSearch={true}
         objKey="univ_name"
       />
       <SelectionBox
-        groupClass={`mb-3  selectbox ${props.clssName}`}
+        groupClass={`mb-3  selectbox ${clssName}`}
         groupId="intakeInterested"
         label="Intake Interested"
         value={fileData.intake_interested}
@@ -127,7 +137,7 @@ function CourseUniForm(props) {
       />
       <SelectionBox
         label="Level Applying For"
-        groupClass={`mb-3  selectbox ${props.clssName}`}
+        groupClass={`mb-3  selectbox ${clssName}`}
         groupId="levelApplying"
         value={fileData.level_applying_for}
         onChange={(val) => {
@@ -142,7 +152,7 @@ function CourseUniForm(props) {
         objKey="levels"
       />
       <SelectionBox
-        groupClass={`mb-3  selectbox ${props.clssName}`}
+        groupClass={`mb-3  selectbox ${clssName}`}
         groupId="courseIntersted"
         label="Course Interested"
         value={fileData.course_interested}
@@ -163,9 +173,9 @@ function CourseUniForm(props) {
       />
       <FileUpload
         label="SOP"
-        appId={props.appId}
+        appId={appId}
         uploadId="Sop"
-        isEdit={props.edit}
+        isEdit={true}
         onChange={(val) => {
           dispatchFunction({
             type: "sop",
@@ -173,17 +183,17 @@ function CourseUniForm(props) {
           });
         }}
         groupId="sopFile"
-        groupClassName={`mb-3  dragDropUpload noHeight ${props.clssName}`}
+        groupClassName={`mb-3  dragDropUpload noHeight ${clssName}`}
         fieldName="sopFileIp"
         minUploadSize="0.005"
         maxUploadSize="10"
         afile={fileData.sop}
       />
       <FileUpload
-        appId={props.appId}
+        appId={appId}
         uploadId="rcvd_offer_letter"
         label="Offer Letter"
-        isEdit={props.edit}
+        isEdit={true}
         onChange={(val) => {
           dispatchFunction({
             type: "rcvd_offer_letter",
@@ -191,7 +201,7 @@ function CourseUniForm(props) {
           });
         }}
         groupId="rcvd_offer_letter"
-        groupClassName={`mb-3  dragDropUpload noHeight ${props.clssName}`}
+        groupClassName={`mb-3  dragDropUpload noHeight ${clssName}`}
         fieldName="rcvd_offer_letterIP"
         minUploadSize="0.005"
         maxUploadSize="10"
@@ -238,6 +248,6 @@ function CourseUniForm(props) {
       </div>
     </Form>
   );
-}
+};
 
 export default CourseUniForm;

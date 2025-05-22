@@ -13,7 +13,7 @@ const allColumns = [
   { name: "Notes", id: "notes" },
   { name: "Date", id: "date" },
 ];
-function EnquiryColumnFilter(props) {
+const EnquiryColumnFilter = ({ enqFilter, filterOnClick }) => {
   const [columnStatus, setColumnStatus] = useState(false);
   const columnData = useSelector((store) => store.enqColumn);
   const dispatch = useDispatch();
@@ -21,13 +21,13 @@ function EnquiryColumnFilter(props) {
     <>
       <div className="col-lg-12 flex-main">
         <div>
-          {props.enqFilter.university_interested ||
-          props.enqFilter.level_applying_for ||
-          props.enqFilter.intake_interested ||
-          props.enqFilter.enquiry_status ? (
+          {enqFilter.university_interested ||
+          enqFilter.level_applying_for ||
+          enqFilter.intake_interested ||
+          enqFilter.enquiry_status ? (
             <button
               className="btn btn-outline-primary mb-2 me-4"
-              onClick={props.filterOnClick}
+              onClick={filterOnClick}
             >
               Clear Filter
             </button>
@@ -108,6 +108,6 @@ function EnquiryColumnFilter(props) {
       )}
     </>
   );
-}
+};
 
 export default EnquiryColumnFilter;

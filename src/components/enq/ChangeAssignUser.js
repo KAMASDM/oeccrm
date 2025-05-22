@@ -1,30 +1,30 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { OverlayTrigger, Popover } from "react-bootstrap";
 import SelectSearch from "react-select-search";
-import { ajaxCall } from "../../helpers/ajaxCall";
-import { useDispatch, useSelector } from "react-redux";
 import { uiAction } from "../../store/uiStore";
+import { ajaxCall } from "../../helpers/ajaxCall";
 
-function ChangeAssignUser(props) {
-  const [isUpdating, setIsUpdating] = useState(false);
+const ChangeAssignUser = ({ name, assignId, courseId, enqName, allUser }) => {
+  const dispatch = useDispatch();
   const [data, setData] = useState({
-    name: props.name,
-    val: props.assignId ? props.assignId : null,
+    name: name,
+    val: assignId ? assignId : null,
   });
   const [throwErr, setThrowErr] = useState(null);
-  const dispatch = useDispatch();
+  const [isUpdating, setIsUpdating] = useState(false);
+  const authData = useSelector((state) => state.authStore);
 
   useEffect(() => {
     if (throwErr) throw throwErr;
   }, [throwErr]);
 
-  const authData = useSelector((state) => state.authStore);
   const changeData = async function (val, data) {
     setIsUpdating(true);
     const formData = new FormData();
     formData.append("assigned_users", val);
     const response = await ajaxCall(
-      `get/courseinfo/${props.courseId}/`,
+      `get/courseinfo/${courseId}/`,
       {
         Authorization: `Bearer ${authData.accessToken}`,
       },
@@ -52,7 +52,7 @@ function ChangeAssignUser(props) {
         uiAction.setNotification({
           show: true,
           heading: "Enquiry",
-          msg: `For ${props.enqName} assigned User changed successfully`,
+          msg: `For ${enqName} assigned User changed successfully`,
         })
       );
       return;
@@ -67,17 +67,18 @@ function ChangeAssignUser(props) {
         uiAction.setNotification({
           show: true,
           heading: "Enquiry",
-          msg: `For ${props.enqName} assigned User changed successfully`,
+          msg: `For ${enqName} assigned User changed successfully`,
         })
       );
     }
   };
+
   const popoverAssignUsr = (
     <Popover id="popoverAssignusrEnq">
       <Popover.Body>
         <SelectSearch
           placeholder="select Option"
-          options={props.allUser}
+          options={allUser}
           value={data.val}
           onChange={changeData}
           name="assignedUsr"
@@ -86,6 +87,7 @@ function ChangeAssignUser(props) {
       </Popover.Body>
     </Popover>
   );
+
   return (
     <>
       {isUpdating ? (
@@ -102,6 +104,6 @@ function ChangeAssignUser(props) {
       )}
     </>
   );
-}
+};
 
 export default ChangeAssignUser;

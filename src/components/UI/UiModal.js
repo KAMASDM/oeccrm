@@ -1,35 +1,37 @@
 import React from "react";
-import { Button, Modal } from "react-bootstrap";
+import { Modal } from "react-bootstrap";
 
-function UiModal(props) {
-  const size = props?.size ? props.size : "lg";
+const UiModal = ({
+  size,
+  showStatus,
+  setModalStatus,
+  title,
+  body,
+  showHeader,
+  showFooter,
+  footerContent,
+  modalClass,
+}) => {
+  const mainSize = size ? size : "lg";
   return (
     <Modal
-      show={props.showStatus}
-      size={size}
+      show={showStatus}
+      size={mainSize}
       aria-labelledby="contained-modal-title-vcenter"
       centered
-      onHide={props.setModalStatus}
+      onHide={setModalStatus}
     >
-      {props.showHeader ? (
+      {showHeader ? (
         <Modal.Header closeButton>
-          <Modal.Title id="contained-modal-title-vcenter">
-            {props.title}
-          </Modal.Title>
+          <Modal.Title id="contained-modal-title-vcenter">{title}</Modal.Title>
         </Modal.Header>
       ) : (
         ""
       )}
-      <Modal.Body className={props?.modalClass ? props?.modalClass : ""}>
-        {props.body}
-      </Modal.Body>
-      {props.showFooter ? (
-        <Modal.Footer>{props.footerContent}</Modal.Footer>
-      ) : (
-        ""
-      )}
+      <Modal.Body className={modalClass ? modalClass : ""}>{body}</Modal.Body>
+      {showFooter ? <Modal.Footer>{footerContent}</Modal.Footer> : ""}
     </Modal>
   );
-}
+};
 
 export default UiModal;

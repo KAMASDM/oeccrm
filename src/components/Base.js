@@ -30,17 +30,16 @@ function Base() {
         navigate("/search");
       }
     });
-  }, []);
+  }, [navigate]);
 
   const uiData = useSelector((state) => state.uiStore);
   const authData = useSelector((state) => state.authStore);
   const dispatch = useDispatch();
   const isSmallDevice = window.innerWidth > 992;
   const [sideBarStatus, setSideBarStatus] = useState(isSmallDevice);
-  // checking whether staff try to go to other pages
 
   const location = useLocation();
-  const checkRestrictedStaffPath = function () {
+  const checkRestrictedStaffPath = useEffect(() => {
     if (
       location.pathname === "/search" ||
       location.pathname === "/university" ||
@@ -51,8 +50,8 @@ function Base() {
       return true;
     }
     return false;
-  };
-  
+  }, [location.pathname]);
+
   useEffect(() => {
     if (authData.user_type === "staff" && checkRestrictedStaffPath()) {
       dispatch(
@@ -67,7 +66,14 @@ function Base() {
     if (!isSmallDevice) {
       setSideBarStatus(false);
     }
-  }, [location.pathname, isSmallDevice]);
+  }, [
+    location.pathname,
+    isSmallDevice,
+    authData.user_type,
+    checkRestrictedStaffPath,
+    dispatch,
+    navigate,
+  ]);
 
   useEffect(() => {}, []);
   return (
@@ -84,30 +90,7 @@ function Base() {
             <div className="middle-content p-0">
               <div className="container-fluid">
                 <Header sidebarStateChange={setSideBarStatus} />
-                <Outlet />{" "}
-                <div className="neumorphism-box shortcutBox">
-                  <div className="statbox box box-shadow">
-                    <div className="widget-heading">
-                      <h2 className="wHeadingMain">Shortcuts</h2>
-                      <div className="widget-content widget-content-area">
-                        <div className="row">
-                          <div className="col-md-4">
-                            <p>alt + c : All Enquiry</p>
-                            <p>alt + q : Create Enquiry</p>
-                          </div>
-                          <div className="col-md-4">
-                            <p>alt + a : All Applications</p>
-                            <p>alt + z : Create Applications</p>
-                          </div>
-                          <div className="col-md-4">
-                            <p>alt + p : User Profile</p>
-                            <p>alt + s : Search Course</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <Outlet />
               </div>
             </div>
           </div>

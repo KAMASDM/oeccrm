@@ -4,7 +4,6 @@ import {
   Button,
   Typography,
   Grid,
-  TextField,
   CircularProgress,
   Paper,
   ThemeProvider,
@@ -13,7 +12,7 @@ import {
   Divider,
   CssBaseline,
   Container,
-  styled
+  styled,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -23,93 +22,130 @@ import FileUpload from "../../components/UI/Form/FileUpload";
 import SelectionBox from "../../components/UI/Form/SelectionBox";
 import ApplicantDetails from "./ApplicantDetails";
 
-// Lavender Theme Definition
 const lavenderTheme = createTheme({
   palette: {
-    primary: { light: '#c5b0e6', main: '#9575cd', dark: '#7953b3', contrastText: '#fff' },
-    secondary: { light: '#efc0ff', main: '#ba68c8', dark: '#883997', contrastText: '#fff' },
-    success: { light: '#a7d7c5', main: '#66bb6a', dark: '#43a047', contrastText: '#fff' },
-    error: { light: '#ffb3c4', main: '#f06292', dark: '#e91e63', contrastText: '#fff' },
-    info: { light: '#b3e0ff', main: '#64b5f6', dark: '#1976d2', contrastText: '#fff' },
-    warning: { light: '#fff1b8', main: '#ffb74d', dark: '#f57c00', contrastText: '#fff' },
-    background: { default: '#f5f3fa', paper: '#f0eef7' },
-    text: { primary: '#3f3b5b', secondary: '#69668a' },
+    primary: {
+      light: "#c5b0e6",
+      main: "#9575cd",
+      dark: "#7953b3",
+      contrastText: "#fff",
+    },
+    secondary: {
+      light: "#efc0ff",
+      main: "#ba68c8",
+      dark: "#883997",
+      contrastText: "#fff",
+    },
+    success: {
+      light: "#a7d7c5",
+      main: "#66bb6a",
+      dark: "#43a047",
+      contrastText: "#fff",
+    },
+    error: {
+      light: "#ffb3c4",
+      main: "#f06292",
+      dark: "#e91e63",
+      contrastText: "#fff",
+    },
+    info: {
+      light: "#b3e0ff",
+      main: "#64b5f6",
+      dark: "#1976d2",
+      contrastText: "#fff",
+    },
+    warning: {
+      light: "#fff1b8",
+      main: "#ffb74d",
+      dark: "#f57c00",
+      contrastText: "#fff",
+    },
+    background: { default: "#f5f3fa", paper: "#f0eef7" },
+    text: { primary: "#3f3b5b", secondary: "#69668a" },
   },
-  typography: { 
-    fontFamily: ['Poppins', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"Helvetica Neue"', 'Arial', 'sans-serif'].join(','),
+  typography: {
+    fontFamily: [
+      "Poppins",
+      "-apple-system",
+      "BlinkMacSystemFont",
+      '"Segoe UI"',
+      "Roboto",
+      '"Helvetica Neue"',
+      "Arial",
+      "sans-serif",
+    ].join(","),
     h5: {
       fontWeight: 600,
-      fontSize: '1.4rem',
+      fontSize: "1.4rem",
     },
     h6: {
       fontWeight: 600,
-      fontSize: '1.2rem',
+      fontSize: "1.2rem",
     },
     subtitle1: {
       fontWeight: 500,
-    }
+    },
   },
   components: {
-    MuiPaper: { 
-      styleOverrides: { 
-        root: { 
+    MuiPaper: {
+      styleOverrides: {
+        root: {
           borderRadius: 12,
         },
-      }
+      },
     },
-    MuiButton: { 
-      styleOverrides: { 
+    MuiButton: {
+      styleOverrides: {
         contained: {
-          backgroundColor: '#9575cd',
-          color: '#fff',
-          '&:hover': {
-            backgroundColor: '#7953b3',
-          }
-        }
-      }
+          backgroundColor: "#9575cd",
+          color: "#fff",
+          "&:hover": {
+            backgroundColor: "#7953b3",
+          },
+        },
+      },
     },
     MuiTextField: {
       styleOverrides: {
         root: {
-          '& .MuiOutlinedInput-root': {
+          "& .MuiOutlinedInput-root": {
             borderRadius: 8,
-            '&.Mui-focused fieldset': {
-              borderColor: '#9575cd',
+            "&.Mui-focused fieldset": {
+              borderColor: "#9575cd",
             },
-            '&:hover fieldset': {
-              borderColor: '#9575cd',
+            "&:hover fieldset": {
+              borderColor: "#9575cd",
             },
           },
-        }
-      }
-    }
+        },
+      },
+    },
   },
 });
 
-// Styled Components for document upload
 const UploadBox = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
   borderRadius: theme.shape.borderRadius,
   padding: theme.spacing(2),
   marginBottom: theme.spacing(2),
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
   minHeight: 80,
-  cursor: 'pointer',
-  transition: 'all 0.2s ease',
+  cursor: "pointer",
+  transition: "all 0.2s ease",
   border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
-  '&:hover': {
+  "&:hover": {
     backgroundColor: alpha(theme.palette.primary.light, 0.1),
-  }
+  },
 }));
 
-const UploadIcon = styled('div')(({ theme }) => ({
+const UploadIcon = styled("div")(({ theme }) => ({
   color: theme.palette.primary.main,
   marginBottom: theme.spacing(1),
-  display: 'flex',
-  justifyContent: 'center',
+  display: "flex",
+  justifyContent: "center",
 }));
 
 const SubmitButton = styled(Button)(({ theme }) => ({
@@ -117,36 +153,76 @@ const SubmitButton = styled(Button)(({ theme }) => ({
   marginTop: theme.spacing(2),
 }));
 
-// Initial state for form data
 const initialState = {
-  enqId: null, tenthMarksheet: null, twelvethMarksheet: null, diplomaMarksheet: null, bachelorMarksheet: null, masterMarksheet: null,
-  lor: null, resume: null, languageExam: null, passport: null, assignedUser: null, status: null, sop: null, rcvd_offer_letter: null,
-  university_interested: "", course_interested: "", intake_interested: "", level_applying_for: "",
+  enqId: null,
+  tenthMarksheet: null,
+  twelvethMarksheet: null,
+  diplomaMarksheet: null,
+  bachelorMarksheet: null,
+  masterMarksheet: null,
+  lor: null,
+  resume: null,
+  languageExam: null,
+  passport: null,
+  assignedUser: null,
+  status: null,
+  sop: null,
+  rcvd_offer_letter: null,
+  university_interested: "",
+  course_interested: "",
+  intake_interested: "",
+  level_applying_for: "",
 };
 
-// Reducer function for managing file state
 const reducerFile = (state, action) => {
   if (action?.all) {
     return {
-      enqId: action.data.enqId, tenthMarksheet: action.data.tenthMarksheet, twelvethMarksheet: action.data.twelvethMarksheet,
-      diplomaMarksheet: action.data.diplomaMarksheet, bachelorMarksheet: action.data.bachelorMarksheet, masterMarksheet: action.data.masterMarksheet,
-      lor: action.data.lor, resume: action.data.resume, languageExam: action.data.languageExam, passport: action.data.passport,
-      assignedUser: action.data.assignedUser, status: action.data.status, sop: action.data.sop, rcvd_offer_letter: action.data.rcvd_offer_letter,
-      university_interested: action.data.university_interested, course_interested: action.data.course_interested,
-      intake_interested: action.data.intake_interested, level_applying_for: action.data.level_applying_for,
+      enqId: action.data.enqId,
+      tenthMarksheet: action.data.tenthMarksheet,
+      twelvethMarksheet: action.data.twelvethMarksheet,
+      diplomaMarksheet: action.data.diplomaMarksheet,
+      bachelorMarksheet: action.data.bachelorMarksheet,
+      masterMarksheet: action.data.masterMarksheet,
+      lor: action.data.lor,
+      resume: action.data.resume,
+      languageExam: action.data.languageExam,
+      passport: action.data.passport,
+      assignedUser: action.data.assignedUser,
+      status: action.data.status,
+      sop: action.data.sop,
+      rcvd_offer_letter: action.data.rcvd_offer_letter,
+      university_interested: action.data.university_interested,
+      course_interested: action.data.course_interested,
+      intake_interested: action.data.intake_interested,
+      level_applying_for: action.data.level_applying_for,
     };
   }
   return { ...state, [action.type]: action.value };
 };
 
-// Simple document upload component
-const DocumentUpload = ({ label, fieldName, file, onChange, linkText, linkUrl }) => {
+const DocumentUpload = ({
+  label,
+  fieldName,
+  file,
+  onChange,
+  linkText,
+  linkUrl,
+}) => {
   return (
     <Box sx={{ mb: 3 }}>
       <Typography variant="subtitle1" sx={{ mb: 1 }}>
-        {label} {linkText && (
+        {label}{" "}
+        {linkText && (
           <>
-            / <a href={linkUrl} target="_blank" rel="noreferrer" style={{ color: '#9575cd' }}>{linkText}</a>
+            /{" "}
+            <a
+              href={linkUrl}
+              target="_blank"
+              rel="noreferrer"
+              style={{ color: "#9575cd" }}
+            >
+              {linkText}
+            </a>
           </>
         )}
       </Typography>
@@ -160,31 +236,58 @@ const DocumentUpload = ({ label, fieldName, file, onChange, linkText, linkUrl })
           maxUploadSize="10"
         />
         <UploadIcon>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M17 8L12 3L7 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M12 3V15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M17 8L12 3L7 8"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M12 3V15"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
         </UploadIcon>
         <Typography variant="body2" color="text.secondary">
-          {file ? (file instanceof File ? `File: ${file.name}` : "File uploaded") : "No files uploaded yet"}
+          {file
+            ? file instanceof File
+              ? `File: ${file.name}`
+              : "File uploaded"
+            : "No files uploaded yet"}
         </Typography>
       </UploadBox>
     </Box>
   );
 };
 
-// Main Component
-function SideBySideApplicationForm(props) {
+const ApplicationForm = ({ edit, enqID, appId }) => {
   const [fileData, dispatchFile] = useReducer(reducerFile, initialState);
   const [loadError, setLoadError] = useState({
-    isLoading: props.edit,
+    isLoading: edit,
     isError: false,
     isSubmitting: false,
   });
   const [throwErr, setThrowErr] = useState(null);
   const [studentName, setStudentName] = useState("");
-  
+
   const authData = useSelector((state) => state.authStore);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -193,24 +296,41 @@ function SideBySideApplicationForm(props) {
     if (throwErr) throw throwErr;
   }, [throwErr]);
 
-  // Fetch application data when editing
   const fetchApplicationData = useCallback(async () => {
-    if (!props.appId) {
-      setLoadError({ isLoading: false, isError: "Application ID is missing.", isSubmitting: false });
+    if (!appId) {
+      setLoadError({
+        isLoading: false,
+        isError: "Application ID is missing.",
+        isSubmitting: false,
+      });
       return;
     }
-    setLoadError(prev => ({ ...prev, isLoading: true, isError: false }));
+    setLoadError((prev) => ({ ...prev, isLoading: true, isError: false }));
     try {
       const response = await ajaxCallWithHeaderOnly(
-        `get/courseinfo/?courseinfo_id=${props.appId}`,
+        `get/courseinfo/?courseinfo_id=${appId}`,
         { Authorization: `Bearer ${authData.accessToken}` },
-        "POST", null
+        "POST",
+        null
       );
-      if (response?.isNetwork) { setThrowErr({ ...response, page: "appForm" }); return; }
-      if (response?.status === 401 || response?.status === 204) { setThrowErr({ ...response, page: "appForm" }); return; }
-      if (response?.status === 404) { setThrowErr({ ...response, status: 204, page: "appForm" }); return; }
+      if (response?.isNetwork) {
+        setThrowErr({ ...response, page: "appForm" });
+        return;
+      }
+      if (response?.status === 401 || response?.status === 204) {
+        setThrowErr({ ...response, page: "appForm" });
+        return;
+      }
+      if (response?.status === 404) {
+        setThrowErr({ ...response, status: 204, page: "appForm" });
+        return;
+      }
       if (!response?.results || response.results.length === 0) {
-        setLoadError({ isLoading: false, isError: "Application data not found.", isSubmitting: false });
+        setLoadError({
+          isLoading: false,
+          isError: "Application data not found.",
+          isSubmitting: false,
+        });
         return;
       }
 
@@ -241,20 +361,24 @@ function SideBySideApplicationForm(props) {
       setLoadError({ isLoading: false, isError: false, isSubmitting: false });
     } catch (e) {
       setThrowErr({ e, page: "appForm_fetch" });
-      setLoadError({ isLoading: false, isError: "Failed to load application data.", isSubmitting: false });
+      setLoadError({
+        isLoading: false,
+        isError: "Failed to load application data.",
+        isSubmitting: false,
+      });
     }
-  }, [props.appId, authData.accessToken]);
+  }, [appId, authData.accessToken]);
 
   useEffect(() => {
-    if (!props.edit) {
-      if (props.enqID) {
-        dispatchFile({ type: "enqId", value: props.enqID });
+    if (!edit) {
+      if (enqID) {
+        dispatchFile({ type: "enqId", value: enqID });
       }
       setLoadError({ isLoading: false, isError: false, isSubmitting: false });
       return;
     }
     fetchApplicationData();
-  }, [props.edit, props.enqID, fetchApplicationData]);
+  }, [edit, enqID, fetchApplicationData]);
 
   const handleChange = (fileName, file) => {
     dispatchFile({ type: fileName, value: file });
@@ -267,93 +391,159 @@ function SideBySideApplicationForm(props) {
     }
   };
 
-  const submitApp = async function() {
+  const submitApp = async function () {
     // Validation
-    if (!fileData.enqId) { 
-      setLoadError({ isError: "Please Select Student Name", isLoading: false, isSubmitting: false }); 
-      return; 
-    }
-    
-    let err = "Please upload ", isErr = false;
-    if (!fileData.tenthMarksheet) { err += "10th Marksheet"; isErr = true; }
-    if (!fileData.twelvethMarksheet) { err += isErr ? ", " : ""; err += "12th Marksheet"; isErr = true; }
-    if (!fileData.passport) { err += isErr ? ", " : ""; err += "passport"; isErr = true; }
-    
-    if (isErr) {
-      setLoadError({ isError: err + " document(s).", isLoading: false, isSubmitting: false });
+    if (!fileData.enqId) {
+      setLoadError({
+        isError: "Please Select Student Name",
+        isLoading: false,
+        isSubmitting: false,
+      });
       return;
     }
-    
+
+    let err = "Please upload ",
+      isErr = false;
+    if (!fileData.tenthMarksheet) {
+      err += "10th Marksheet";
+      isErr = true;
+    }
+    if (!fileData.twelvethMarksheet) {
+      err += isErr ? ", " : "";
+      err += "12th Marksheet";
+      isErr = true;
+    }
+    if (!fileData.passport) {
+      err += isErr ? ", " : "";
+      err += "passport";
+      isErr = true;
+    }
+
+    if (isErr) {
+      setLoadError({
+        isError: err + " document(s).",
+        isLoading: false,
+        isSubmitting: false,
+      });
+      return;
+    }
+
     setLoadError({ isLoading: false, isError: false, isSubmitting: true });
 
     const fdata = new FormData();
     fdata.append("name", fileData.enqId);
-    
+
     // Append files only if they are File objects (newly uploaded)
-    if (fileData.tenthMarksheet instanceof File) fdata.append("Tenth_Marksheet", fileData.tenthMarksheet);
-    if (fileData.diplomaMarksheet instanceof File) fdata.append("Diploma_Marksheet", fileData.diplomaMarksheet);
-    if (fileData.twelvethMarksheet instanceof File) fdata.append("Twelveth_Marksheet", fileData.twelvethMarksheet);
-    if (fileData.bachelorMarksheet instanceof File) fdata.append("Bachelor_Marksheet", fileData.bachelorMarksheet);
-    if (fileData.masterMarksheet instanceof File) fdata.append("Master_Marksheet", fileData.masterMarksheet);
+    if (fileData.tenthMarksheet instanceof File)
+      fdata.append("Tenth_Marksheet", fileData.tenthMarksheet);
+    if (fileData.diplomaMarksheet instanceof File)
+      fdata.append("Diploma_Marksheet", fileData.diplomaMarksheet);
+    if (fileData.twelvethMarksheet instanceof File)
+      fdata.append("Twelveth_Marksheet", fileData.twelvethMarksheet);
+    if (fileData.bachelorMarksheet instanceof File)
+      fdata.append("Bachelor_Marksheet", fileData.bachelorMarksheet);
+    if (fileData.masterMarksheet instanceof File)
+      fdata.append("Master_Marksheet", fileData.masterMarksheet);
     if (fileData.lor instanceof File) fdata.append("Lor", fileData.lor);
-    if (fileData.resume instanceof File) fdata.append("Resume", fileData.resume);
-    if (fileData.languageExam instanceof File) fdata.append("Language_Exam", fileData.languageExam);
-    if (fileData.passport instanceof File) fdata.append("passport", fileData.passport);
+    if (fileData.resume instanceof File)
+      fdata.append("Resume", fileData.resume);
+    if (fileData.languageExam instanceof File)
+      fdata.append("Language_Exam", fileData.languageExam);
+    if (fileData.passport instanceof File)
+      fdata.append("passport", fileData.passport);
     if (fileData.sop instanceof File) fdata.append("Sop", fileData.sop);
-    if (fileData.rcvd_offer_letter instanceof File) fdata.append("rcvd_offer_letter", fileData.rcvd_offer_letter);
-    
+    if (fileData.rcvd_offer_letter instanceof File)
+      fdata.append("rcvd_offer_letter", fileData.rcvd_offer_letter);
+
     // Append other IDs if they exist
-    if (fileData.university_interested) fdata.append("university_interested", fileData.university_interested);
-    if (fileData.course_interested) fdata.append("course_interested", fileData.course_interested);
-    if (fileData.intake_interested) fdata.append("intake_interested", fileData.intake_interested);
-    if (fileData.level_applying_for) fdata.append("level_applying_for", fileData.level_applying_for);
-    if (fileData.assignedUser) fdata.append("assigned_users", fileData.assignedUser);
+    if (fileData.university_interested)
+      fdata.append("university_interested", fileData.university_interested);
+    if (fileData.course_interested)
+      fdata.append("course_interested", fileData.course_interested);
+    if (fileData.intake_interested)
+      fdata.append("intake_interested", fileData.intake_interested);
+    if (fileData.level_applying_for)
+      fdata.append("level_applying_for", fileData.level_applying_for);
+    if (fileData.assignedUser)
+      fdata.append("assigned_users", fileData.assignedUser);
     if (fileData.status) fdata.append("status", fileData.status);
-    
+
     let url, method;
-    if (props.edit && props.appId) {
-      url = `create/app/courseinfo/${props.appId}/`;
+    if (edit && appId) {
+      url = `create/app/courseinfo/${appId}/`;
       method = "PATCH";
     } else {
       url = "create/app/courseinfo/";
       method = "POST";
     }
-    
+
     try {
-      const response = await ajaxCall(url, { Authorization: `Bearer ${authData.accessToken}` }, method, fdata);
-      if (response?.isNetwork) { setThrowErr({ ...response, page: "appForm_submit" }); return; }
-      if (response?.status === 401 || response?.status === 204) { setThrowErr({ ...response, page: "appForm_submit_auth" }); return; }
-      if (response?.status === 400) { setLoadError({ isError: response.data?.detail || "Please check all form fields and try again.", isLoading: false, isSubmitting: false }); return; }
-      if (response?.status >= 500) { setLoadError({ isError: "Server error, please try again later.", isLoading: false, isSubmitting: false }); return; }
+      const response = await ajaxCall(
+        url,
+        { Authorization: `Bearer ${authData.accessToken}` },
+        method,
+        fdata
+      );
+      if (response?.isNetwork) {
+        setThrowErr({ ...response, page: "appForm_submit" });
+        return;
+      }
+      if (response?.status === 401 || response?.status === 204) {
+        setThrowErr({ ...response, page: "appForm_submit_auth" });
+        return;
+      }
+      if (response?.status === 400) {
+        setLoadError({
+          isError:
+            response.data?.detail ||
+            "Please check all form fields and try again.",
+          isLoading: false,
+          isSubmitting: false,
+        });
+        return;
+      }
+      if (response?.status >= 500) {
+        setLoadError({
+          isError: "Server error, please try again later.",
+          isLoading: false,
+          isSubmitting: false,
+        });
+        return;
+      }
 
       setLoadError({ isLoading: false, isError: false, isSubmitting: false });
-      dispatch(uiAction.setNotification({ 
-        show: true, 
-        heading: "Application", 
-        msg: `Application ${props.edit ? 'updated' : 'created'} successfully.` 
-      }));
+      dispatch(
+        uiAction.setNotification({
+          show: true,
+          heading: "Application",
+          msg: `Application ${edit ? "updated" : "created"} successfully.`,
+        })
+      );
       navigate(`/applications/`);
     } catch (e) {
       setThrowErr({ e, page: "appForm_submit_catch" });
-      setLoadError({ isLoading: false, isError: "An unexpected error occurred.", isSubmitting: false });
+      setLoadError({
+        isLoading: false,
+        isError: "An unexpected error occurred.",
+        isSubmitting: false,
+      });
     }
   };
 
-  // Loading state
-  if (loadError.isLoading && props.edit) {
+  if (loadError.isLoading && edit) {
     return (
       <ThemeProvider theme={lavenderTheme}>
         <CssBaseline />
-        <Box 
-          sx={{ 
-            display: 'flex', 
-            justifyContent: 'center', 
-            alignItems: 'center', 
-            height: '80vh', 
-            bgcolor: 'background.default',
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "80vh",
+            bgcolor: "background.default",
           }}
         >
-          <CircularProgress size={40} sx={{ color: 'primary.main', mr: 2 }} />
+          <CircularProgress size={40} sx={{ color: "primary.main", mr: 2 }} />
           <Typography variant="h6">Loading Application Details...</Typography>
         </Box>
       </ThemeProvider>
@@ -363,40 +553,53 @@ function SideBySideApplicationForm(props) {
   return (
     <ThemeProvider theme={lavenderTheme}>
       <CssBaseline />
-      <Box sx={{ 
-        py: 3, 
-        px: 3,
-        bgcolor: 'background.default',
-        minHeight: 'calc(100vh - 64px)',
-      }}>
+      <Box
+        sx={{
+          py: 3,
+          px: 3,
+          bgcolor: "background.default",
+          minHeight: "calc(100vh - 64px)",
+        }}
+      >
         <Container maxWidth="xl" disableGutters>
           <Grid container spacing={3}>
-            {/* Left Column: Application Form */}
             <Grid item xs={12} md={6}>
-              <Paper elevation={0} sx={{ p: 3, height: '100%' }}>
-                <Typography variant="h5" component="h1" sx={{ mb: 3, color: 'text.primary' }}>
-                  {props.edit ? "Edit Application" : "Create Application"}
+              <Paper elevation={0} sx={{ p: 3, height: "100%" }}>
+                <Typography
+                  variant="h5"
+                  component="h1"
+                  sx={{ mb: 3, color: "text.primary" }}
+                >
+                  {edit ? "Edit Application" : "Create Application"}
                 </Typography>
-                
+
                 <Box sx={{ mb: 3 }}>
-                  <Typography variant="subtitle1" sx={{ mb: 1 }}>Name</Typography>
+                  <Typography variant="subtitle1" sx={{ mb: 1 }}>
+                    Name
+                  </Typography>
                   <SelectionBox
-                    disabled={props.edit && !!fileData.enqId}
+                    disabled={edit && !!fileData.enqId}
                     groupClass="mui-selection-box"
                     groupId="enqId"
                     value={fileData.enqId}
                     onChange={handleStudentSelect}
                     name="enqId"
-                    url={props.edit && fileData.enqId ? `view-enquiry/?id=${fileData.enqId}` : `view-enquiry/`}
+                    url={
+                      edit && fileData.enqId
+                        ? `view-enquiry/?id=${fileData.enqId}`
+                        : `view-enquiry/`
+                    }
                     isSearch={true}
                     objKey="student_name"
                     placeholder="Select a student"
                   />
-                  {loadError.isError && loadError.isError.includes("Student Name") && (
-                    <Typography color="error" variant="caption">Please select a student</Typography>
-                  )}
+                  {loadError.isError &&
+                    loadError.isError.includes("Student Name") && (
+                      <Typography color="error" variant="caption">
+                        Please select a student
+                      </Typography>
+                    )}
                 </Box>
-                
                 <Grid container spacing={2}>
                   <Grid item xs={12} sm={4}>
                     <DocumentUpload
@@ -419,11 +622,13 @@ function SideBySideApplicationForm(props) {
                       label="12th Marksheet"
                       fieldName="twelvethMarksheet"
                       file={fileData.twelvethMarksheet}
-                      onChange={(file) => handleChange("twelvethMarksheet", file)}
+                      onChange={(file) =>
+                        handleChange("twelvethMarksheet", file)
+                      }
                     />
                   </Grid>
                 </Grid>
-                
+
                 <Grid container spacing={2}>
                   <Grid item xs={12} sm={6}>
                     <DocumentUpload
@@ -444,16 +649,21 @@ function SideBySideApplicationForm(props) {
                     />
                   </Grid>
                 </Grid>
-                
-                <Divider sx={{ my: 2, borderColor: alpha(lavenderTheme.palette.primary.main, 0.1) }} />
-                
+                <Divider
+                  sx={{
+                    my: 2,
+                    borderColor: alpha(lavenderTheme.palette.primary.main, 0.1),
+                  }}
+                />
                 <Grid container spacing={2}>
                   <Grid item xs={12} sm={6}>
                     <DocumentUpload
                       label="Diploma Marksheet"
                       fieldName="diplomaMarksheet"
                       file={fileData.diplomaMarksheet}
-                      onChange={(file) => handleChange("diplomaMarksheet", file)}
+                      onChange={(file) =>
+                        handleChange("diplomaMarksheet", file)
+                      }
                     />
                   </Grid>
                   <Grid item xs={12} sm={6}>
@@ -461,11 +671,12 @@ function SideBySideApplicationForm(props) {
                       label="Bachelor Marksheet"
                       fieldName="bachelorMarksheet"
                       file={fileData.bachelorMarksheet}
-                      onChange={(file) => handleChange("bachelorMarksheet", file)}
+                      onChange={(file) =>
+                        handleChange("bachelorMarksheet", file)
+                      }
                     />
                   </Grid>
                 </Grid>
-                
                 <Grid container spacing={2}>
                   <Grid item xs={12} sm={6}>
                     <DocumentUpload
@@ -484,29 +695,34 @@ function SideBySideApplicationForm(props) {
                     />
                   </Grid>
                 </Grid>
-                
-                <SubmitButton 
-                  variant="contained" 
+                <SubmitButton
+                  variant="contained"
                   onClick={submitApp}
                   disabled={loadError.isSubmitting}
                 >
                   {loadError.isSubmitting ? (
                     <>
-                      <CircularProgress size={20} color="inherit" sx={{ mr: 1 }} />
+                      <CircularProgress
+                        size={20}
+                        color="inherit"
+                        sx={{ mr: 1 }}
+                      />
                       Submitting...
                     </>
-                  ) : "Submit"}
+                  ) : (
+                    "Submit"
+                  )}
                 </SubmitButton>
-                
-                {loadError.isError && !loadError.isError.includes("Student Name") && (
-                  <Typography color="error" sx={{ mt: 2 }}>{loadError.isError}</Typography>
-                )}
+                {loadError.isError &&
+                  !loadError.isError.includes("Student Name") && (
+                    <Typography color="error" sx={{ mt: 2 }}>
+                      {loadError.isError}
+                    </Typography>
+                  )}
               </Paper>
             </Grid>
-            
-            {/* Right Column: Applicant Details */}
             <Grid item xs={12} md={6}>
-              <Paper elevation={0} sx={{ p: 3, height: '100%' }}>
+              <Paper elevation={0} sx={{ p: 3, height: "100%" }}>
                 {fileData.enqId ? (
                   <ApplicantDetails
                     enqId={fileData.enqId}
@@ -522,17 +738,24 @@ function SideBySideApplicationForm(props) {
                     status={fileData.status}
                   />
                 ) : (
-                  <Box sx={{ 
-                    display: 'flex', 
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    height: '100%',
-                    minHeight: 300,
-                    color: 'text.secondary'
-                  }}>
-                    <Typography variant="h5" gutterBottom>Applicant Details</Typography>
-                    <Typography variant="body1" sx={{ mt: 2, textAlign: 'center' }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      height: "100%",
+                      minHeight: 300,
+                      color: "text.secondary",
+                    }}
+                  >
+                    <Typography variant="h5" gutterBottom>
+                      Applicant Details
+                    </Typography>
+                    <Typography
+                      variant="body1"
+                      sx={{ mt: 2, textAlign: "center" }}
+                    >
                       Please select a student to view their details
                     </Typography>
                   </Box>
@@ -544,6 +767,6 @@ function SideBySideApplicationForm(props) {
       </Box>
     </ThemeProvider>
   );
-}
+};
 
-export default SideBySideApplicationForm;
+export default ApplicationForm;

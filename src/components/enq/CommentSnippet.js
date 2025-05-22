@@ -5,7 +5,7 @@ import { ajaxCall } from "../../helpers/ajaxCall";
 import { uiAction } from "../../store/uiStore";
 import { FileUploader } from "react-drag-drop-files";
 
-function CommentSnippet({ parentComment, enqId, parentId, refresh }) {
+const CommentSnippet = ({ parentComment, enqId, parentId, refresh }) => {
   const [showInput, setShowInput] = useState({ show: false, id: null });
   const [replyInput, setReplyInput] = useState();
   const [replyFile, setReplyFile] = useState();
@@ -19,7 +19,7 @@ function CommentSnippet({ parentComment, enqId, parentId, refresh }) {
     if (throwErr) throw throwErr;
   }, [throwErr]);
 
-  const sendReplyData = async function (input) {
+  const sendReplyData = async (input) => {
     setSubmitting(true);
     try {
       const fdata = new FormData();
@@ -28,7 +28,7 @@ function CommentSnippet({ parentComment, enqId, parentId, refresh }) {
       fdata.append("content", input);
       if (replyFile instanceof File) fdata.append("uploaded_file", replyFile);
       const response = await ajaxCall(
-        `app/postcomment/`,
+        "app/postcomment/",
         {
           Authorization: `Bearer ${authData.accessToken}`,
         },
@@ -196,6 +196,6 @@ function CommentSnippet({ parentComment, enqId, parentId, refresh }) {
       )}
     </>
   );
-}
+};
 
 export default CommentSnippet;

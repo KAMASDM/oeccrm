@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
 import { ajaxCallWithHeaderOnly } from "../../helpers/ajaxCall";
 import { useSelector } from "react-redux";
 import CourseCard from "./CourseCard";
 import LoadingData from "../UI/LoadingData";
 
-function CourseLists(props) {
+const CourseLists = ({ uniId, courseLevel, goToCourse }) => {
   const [searchCourse, setSearchCourse] = useState();
   const [courseData, setCourseData] = useState({
     totalCourse: null,
@@ -20,9 +20,9 @@ function CourseLists(props) {
     if (throwErr) throw throwErr;
   }, [throwErr]);
 
-  const getData = async function () {
+  const getData = useCallback(async () => {
     setIsLoading(true);
-    let courseUrl = `uni-retrieve/${props.uniId}/?level=${props.courseLevel}`;
+    let courseUrl = `uni-retrieve/${uniId}/?level=${courseLevel}`;
     if (searchCourse?.length) courseUrl += `&course_name=${searchCourse}`;
     const response = await ajaxCallWithHeaderOnly(
       `${courseUrl}`,
@@ -51,11 +51,11 @@ function CourseLists(props) {
     });
 
     setIsLoading(false);
-  };
-  
+  }, [authData.accessToken, courseLevel, searchCourse, uniId]);
+
   useEffect(() => {
     getData();
-  }, [searchCourse]);
+  }, [getData, searchCourse]);
 
   return (
     <>
@@ -70,7 +70,7 @@ function CourseLists(props) {
           />
         </Form.Group>
         <div className="col-md-8 text-right">
-          <button className="btn btn-primary" onClick={props.goToCourse}>
+          <button className="btn btn-primary" onClick={goToCourse}>
             Go to University List
           </button>
         </div>
@@ -84,8 +84,8 @@ function CourseLists(props) {
           courseData.courses.map((course) => (
             <CourseCard
               courseData={course}
-              uniId={props.uniId}
-              levelId={props.courseLevel}
+              uniId={uniId}
+              levelId={courseLevel}
               selectionName={course.id}
               key={course.id}
             />
@@ -96,6 +96,6 @@ function CourseLists(props) {
       </div>
     </>
   );
-}
+};
 
 export default CourseLists;

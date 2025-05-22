@@ -1,11 +1,17 @@
 import React from "react";
 import { Button, Form, InputGroup } from "react-bootstrap";
 
-function EnquiryFilter(props) {
+const EnquiryFilter = ({
+  searchEnq,
+  searchText,
+  setSearchText,
+  refreshNeeded,
+  clearSearch,
+}) => {
   const clss = "col-md-12";
   return (
     <div className="row nomp">
-      <Form onSubmit={props.searchEnq} className={clss}>
+      <Form onSubmit={searchEnq} className={clss}>
         <Form.Label className="text-center itsBlock">Search Enquiry</Form.Label>
         <InputGroup className="mb-3">
           <Form.Control
@@ -14,20 +20,18 @@ function EnquiryFilter(props) {
             aria-describedby="basic-addon2"
             type="text"
             name="search"
-            value={props.searchText}
+            value={searchText}
             onChange={(e) => {
-              props.setSearchText(e.target.value);
+              setSearchText(e.target.value);
               if (!e.target.value?.length) {
-                props.refreshNeeded(true);
+                refreshNeeded(true);
               }
             }}
-            className={`searchInput ${
-              props.searchText?.length ? "nocontent" : ""
-            }`}
+            className={`searchInput ${searchText?.length ? "nocontent" : ""}`}
           />
-          {props.searchText?.length ? (
+          {searchText?.length ? (
             <InputGroup.Text
-              onClick={props.clearSearch}
+              onClick={clearSearch}
               className="clear-search__btn"
             >
               <svg
@@ -51,7 +55,7 @@ function EnquiryFilter(props) {
             variant="outline-primary"
             id="button-addon2"
             className="searchBtnEnq"
-            disabled={props.searchText?.length ? false : true}
+            disabled={searchText?.length ? false : true}
           >
             Search
           </Button>
@@ -59,6 +63,6 @@ function EnquiryFilter(props) {
       </Form>
     </div>
   );
-}
+};
 
 export default EnquiryFilter;

@@ -159,10 +159,7 @@ const useExportPDF = () => {
   useEffect(() => {
     try {
       if (shouldMerge && data) {
-        const htmlContent = (
-          <table className="table table-striped">
-          </table>
-        );
+        const htmlContent = <table className="table table-striped"></table>;
 
         generatePdfFromHtml(renderToString(htmlContent))
           .then((pdfUrl) => {

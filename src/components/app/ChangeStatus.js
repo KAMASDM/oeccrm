@@ -1,30 +1,31 @@
 import React, { useEffect, useState } from "react";
-import { OverlayTrigger, Popover } from "react-bootstrap";
 import SelectSearch from "react-select-search";
-import { ajaxCall } from "../../helpers/ajaxCall";
 import { useDispatch, useSelector } from "react-redux";
+import { OverlayTrigger, Popover } from "react-bootstrap";
 import { uiAction } from "../../store/uiStore";
+import { ajaxCall } from "../../helpers/ajaxCall";
 
-function ChangeStatus(props) {
+const ChangeStatus = ({ enqName, allStatus, name, statusId, courseId }) => {
+  const dispatch = useDispatch();
   const [isUpdating, setIsUpdating] = useState(false);
   const [data, setData] = useState({
-    name: props.name,
-    val: props.assignId ? props.assignId : null,
+    name: name,
+    val: statusId ? statusId : null,
   });
   const [throwErr, setThrowErr] = useState(null);
-  const dispatch = useDispatch();
 
   useEffect(() => {
     if (throwErr) throw throwErr;
   }, [throwErr]);
 
   const authData = useSelector((state) => state.authStore);
-  const changeData = async function (val, data) {
+
+  const changeData = async (val, data) => {
     setIsUpdating(true);
     const formData = new FormData();
     formData.append("status", val);
     const response = await ajaxCall(
-      `get/courseinfo/${props.courseId}/`,
+      `get/courseinfo/${courseId}/`,
       {
         Authorization: `Bearer ${authData.accessToken}`,
       },
@@ -37,7 +38,7 @@ function ChangeStatus(props) {
         uiAction.setNotification({
           show: true,
           heading: "Application",
-          msg: `Some Problem occur while updating the Status`,
+          msg: "Some Problem occur while updating the Status",
         })
       );
       return;
@@ -52,7 +53,7 @@ function ChangeStatus(props) {
         uiAction.setNotification({
           show: true,
           heading: "Application",
-          msg: `Some Problem occur while updating the Status`,
+          msg: "Some Problem occur while updating the Status",
         })
       );
       return;
@@ -67,17 +68,18 @@ function ChangeStatus(props) {
         uiAction.setNotification({
           show: true,
           heading: "Application",
-          msg: `For ${props.enqName} Status changed successfully`,
+          msg: `For ${enqName} Status changed successfully`,
         })
       );
     }
   };
+
   const popoverAssignUsr = (
     <Popover id="popoverAssignusrEnq">
       <Popover.Body>
         <SelectSearch
           placeholder="select Option"
-          options={props.allStatus}
+          options={allStatus}
           value={data.val}
           onChange={changeData}
           name="assignedUsr"
@@ -86,6 +88,7 @@ function ChangeStatus(props) {
       </Popover.Body>
     </Popover>
   );
+
   return (
     <>
       {isUpdating ? (
@@ -102,6 +105,6 @@ function ChangeStatus(props) {
       )}
     </>
   );
-}
+};
 
 export default ChangeStatus;

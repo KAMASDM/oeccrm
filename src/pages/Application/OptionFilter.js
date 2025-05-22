@@ -2,14 +2,23 @@ import React from "react";
 import { Button, Form, InputGroup } from "react-bootstrap";
 import SelectionBox from "../../components/UI/Form/SelectionBox";
 
-function OptionFilter(props) {
-  const clss = props.isAdmin ? "col-md-4" : "col-md-6";
+const OptionFilter = ({
+  isAdmin,
+  filterSelectionChanged,
+  appFilter,
+  searchEnq,
+  searchText,
+  setSearchText,
+  refreshTable,
+  clearSearch,
+}) => {
+  const clss = isAdmin ? "col-md-4" : "col-md-6";
   return (
     <>
       <SelectionBox
         groupClass={`mb-3 selectbox ${clss}`}
-        onChange={props.filterSelectionChanged.bind(null, "enquiry_status")}
-        value={props.appFilter.enquiry_status}
+        onChange={filterSelectionChanged.bind(null, "enquiry_status")}
+        value={appFilter.enquiry_status}
         isSearch={true}
         groupId="status"
         label="Status"
@@ -18,7 +27,7 @@ function OptionFilter(props) {
         objKey="App_status"
       />
       <div className={clss}>
-        <Form onSubmit={props.searchEnq}>
+        <Form onSubmit={searchEnq}>
           <Form.Label>Search Application</Form.Label>
           <InputGroup className="mb-3">
             <Form.Control
@@ -26,20 +35,18 @@ function OptionFilter(props) {
               aria-describedby="basic-addon2"
               type="text"
               name="search"
-              value={props.searchText}
+              value={searchText}
               onChange={(e) => {
-                props.setSearchText(e.target.value);
+                setSearchText(e.target.value);
                 if (!e.target.value) {
-                  props.refreshTable(true);
+                  refreshTable(true);
                 }
               }}
-              className={`searchInput ${
-                props.searchText?.length ? "nocontent" : ""
-              }`}
+              className={`searchInput ${searchText?.length ? "nocontent" : ""}`}
             />{" "}
-            {props.searchText?.length ? (
+            {searchText?.length ? (
               <InputGroup.Text
-                onClick={props.clearSearch}
+                onClick={clearSearch}
                 className="clear-search__btn"
               >
                 <svg
@@ -61,8 +68,8 @@ function OptionFilter(props) {
               variant="outline-primary"
               id="button-addon2"
               className="searchBtnEnq"
-              disabled={props.searchText?.length ? false : true}
-              onClick={props.searchEnq}
+              disabled={searchText?.length ? false : true}
+              onClick={searchEnq}
             >
               Search
             </Button>
@@ -71,6 +78,6 @@ function OptionFilter(props) {
       </div>
     </>
   );
-}
+};
 
 export default OptionFilter;

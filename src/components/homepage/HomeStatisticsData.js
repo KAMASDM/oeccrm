@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { ajaxCallWithHeaderOnly } from "../../helpers/ajaxCall";
+import React, { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import LoadingData from "../UI/LoadingData";
+import { ajaxCallWithHeaderOnly } from "../../helpers/ajaxCall";
 
-function HomeStatisticsData() {
+const HomeStatisticsData = () => {
   const [data, setData] = useState({
     bestAgent: null,
     bestAgentCount: null,
@@ -12,18 +12,17 @@ function HomeStatisticsData() {
     bestCourse: null,
     bestCourseCount: null,
   });
-
   const [throwErr, setThrowErr] = useState(null);
+  const authData = useSelector((state) => state.authStore);
 
   useEffect(() => {
     if (throwErr) throw throwErr;
   }, [throwErr]);
 
-  const authData = useSelector((state) => state.authStore);
-  const bestEmpData = async () => {
+  const bestEmpData = useCallback(async () => {
     try {
       const response = await ajaxCallWithHeaderOnly(
-        `bestagent/`,
+        "bestagent/",
         {
           Authorization: `Bearer ${authData.accessToken}`,
         },
@@ -72,11 +71,12 @@ function HomeStatisticsData() {
       setThrowErr({ e, page: "enquiries" });
       return;
     }
-  };
-  const bestUniData = async () => {
+  }, [authData.accessToken]);
+
+  const bestUniData = useCallback(async () => {
     try {
       const response = await ajaxCallWithHeaderOnly(
-        `best-performing-university/`,
+        "best-performing-university/",
         {
           Authorization: `Bearer ${authData.accessToken}`,
         },
@@ -121,11 +121,12 @@ function HomeStatisticsData() {
       setThrowErr({ e, page: "enquiries" });
       return;
     }
-  };
-  const bestCourseData = async () => {
+  }, [authData.accessToken]);
+
+  const bestCourseData = useCallback(async () => {
     try {
       const response = await ajaxCallWithHeaderOnly(
-        `best-performing-university/`,
+        "best-performing-university/",
         {
           Authorization: `Bearer ${authData.accessToken}`,
         },
@@ -153,7 +154,6 @@ function HomeStatisticsData() {
           const bestCourse = { name: "", apps: 0 };
           for (const [yr, data] of Object.entries(response.data)) {
             if (+yr === new Date().getFullYear()) {
-
               bestCourse.name = Object.keys(data)[0];
               bestCourse.apps = data[bestCourse.name];
             }
@@ -171,12 +171,14 @@ function HomeStatisticsData() {
       setThrowErr({ e, page: "enquiries" });
       return;
     }
-  };
+  }, [authData.accessToken]);
+
   useEffect(() => {
     bestEmpData();
     bestUniData();
     bestCourseData();
-  }, []);
+  }, [bestCourseData, bestEmpData, bestUniData]);
+
   return (
     <>
       {data.bestAgent ? (
@@ -210,6 +212,6 @@ function HomeStatisticsData() {
       )}
     </>
   );
-}
+};
 
 export default HomeStatisticsData;

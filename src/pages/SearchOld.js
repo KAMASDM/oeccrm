@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useCallback, useEffect, useReducer, useState } from "react";
 import { Form, OverlayTrigger, Popover, ProgressBar } from "react-bootstrap";
 import SelectionBox from "../components/UI/Form/SelectionBox";
 import { ajaxCallWithHeaderOnly } from "../helpers/ajaxCall";
@@ -147,7 +147,7 @@ function Search() {
       sortable: true,
     },
   ];
-  const getData = async function () {
+  const getData = useCallback(async () => {
     setIsUniLoadingData(true);
     let courseUrl = `courseslistsuni/${uniState.filter}&p=${pageNo}&records=${perPage}`;
     const response = await ajaxCallWithHeaderOnly(
@@ -186,7 +186,8 @@ function Search() {
     dispatchUniState({
       type: "resetRefresh",
     });
-  };
+  }, [authData.accessToken, pageNo, perPage, uniState.filter]);
+
   useEffect(() => {
     try {
       if (uniState.isAll) getData();
@@ -205,7 +206,9 @@ function Search() {
     uniState.cSearch,
     perPage,
     pageNo,
+    getData,
   ]);
+
   const selectValueChanged = function (typeId, typeName, val, name) {
     if (name) {
       dispatchUniState({

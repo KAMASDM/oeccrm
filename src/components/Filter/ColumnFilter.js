@@ -3,19 +3,24 @@ import { Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { appAction } from "../../store/appColumns";
 
-function ColumnFilter(props) {
-  const [columnStatus, setColumnStatus] = useState(false);
-  const columnData = useSelector((store) => store[props.filterStore]);
+const ColumnFilter = ({
+  filterStore,
+  showFilterBtn,
+  filterOnClick,
+  allColumns,
+}) => {
   const dispatch = useDispatch();
-  
+  const [columnStatus, setColumnStatus] = useState(false);
+  const columnData = useSelector((store) => store[filterStore]);
+
   return (
     <>
       <div className="col-lg-12 flex-main">
         <div>
-          {props.showFilterBtn ? (
+          {showFilterBtn ? (
             <button
               class="btn btn-outline-dark mb-2 me-4"
-              onClick={props.filterOnClick}
+              onClick={filterOnClick}
             >
               Clear Filter
             </button>
@@ -78,7 +83,7 @@ function ColumnFilter(props) {
       </div>
       {columnStatus ? (
         <div className="col-lg-12 flex-col-btns">
-          {props.allColumns.map((column) => {
+          {allColumns.map((column) => {
             return (
               <Button
                 variant={columnData[column.id] ? "outline-dark" : "dark"}
@@ -96,6 +101,6 @@ function ColumnFilter(props) {
       )}
     </>
   );
-}
+};
 
 export default ColumnFilter;

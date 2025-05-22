@@ -2,7 +2,7 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import ApplicationForm from "./ApplicationForm";
 
-function EditApplication() {
+const EditApplication = () => {
   const param = useParams();
   return (
     <ApplicationForm
@@ -12,6 +12,6 @@ function EditApplication() {
       edit={true}
     />
   );
-}
+};
 
 export default EditApplication;

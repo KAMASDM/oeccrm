@@ -1,28 +1,30 @@
 import React, { useEffect, useState } from "react";
-import { Form } from "react-bootstrap";
-import { ajaxCall } from "../../helpers/ajaxCall";
 import { useDispatch, useSelector } from "react-redux";
+import { Form } from "react-bootstrap";
 import { uiAction } from "../../store/uiStore";
+import { ajaxCall } from "../../helpers/ajaxCall";
 
-function AddComment(props) {
+const AddComment = ({ enqId, refresh }) => {
+  const dispatch = useDispatch();
   const [textBoxStatus, setTextBoxStatus] = useState({
     show: false,
     text: null,
   });
   const [throwErr, setThrowErr] = useState(null);
   const authData = useSelector((state) => state.authStore);
-  const dispatch = useDispatch();
+
   useEffect(() => {
     if (throwErr) throw throwErr;
   }, [throwErr]);
+
   const sendCommentData = async function (input) {
     const data = {
-      object_id: props.enqId,
+      object_id: enqId,
       content: input,
     };
 
     const response = await ajaxCall(
-      `enq/postcomment/`,
+      "enq/postcomment/",
       {
         Authorization: `Bearer ${authData.accessToken}`,
         Accept: "application/json",
@@ -31,7 +33,6 @@ function AddComment(props) {
       "POST",
       JSON.stringify(data)
     );
-    console.log(response);
     if (response?.isNetwork) {
       setThrowErr({ ...response, page: "enqForm" });
       return;
@@ -50,9 +51,10 @@ function AddComment(props) {
           msg: `Comment Added`,
         })
       );
-      props.refresh();
+      refresh();
     }
   };
+
   const addComment = function () {
     if (textBoxStatus.text?.length) {
       sendCommentData(textBoxStatus.text);
@@ -60,6 +62,7 @@ function AddComment(props) {
     }
     setTextBoxStatus({ show: false, text: null });
   };
+  
   return (
     <div className="text-center">
       {textBoxStatus.show ? (
@@ -88,6 +91,6 @@ function AddComment(props) {
       )}
     </div>
   );
-}
+};
 
 export default AddComment;

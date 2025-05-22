@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import EnqDetails from "../../components/enq/EnqDetails";
 import { Link, useParams } from "react-router-dom";
 import LoadingData from "../../components/UI/LoadingData";
@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 import CourseUniData from "../../components/StudentDashboard/CourseUniData";
 import AddCourseUni from "../../components/app/AddCourseUni";
 
-function StudentDashboard() {
+const StudentDashboard = () => {
   const [appDocInfo, setAppDocInfo] = useState({ isLoading: true, data: {} });
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState([]);
@@ -20,7 +20,7 @@ function StudentDashboard() {
     if (throwErr) throw throwErr;
   }, [throwErr]);
 
-  const getEnqdata = async () => {
+  const getEnqdata = useCallback(async () => {
     const response = await ajaxCallWithHeaderOnly(
       `enquiries/${enqId}/`,
       {
@@ -47,19 +47,19 @@ function StudentDashboard() {
     }
     setData(response);
     setIsLoading(false);
-  };
+  },[authData.accessToken, enqId]);
 
   useEffect(() => {
     if (enqId) {
       setIsLoading(true);
       getEnqdata();
     }
-  }, [enqId]);
+  }, [enqId, getEnqdata]);
 
   if (isLoading) {
     return <LoadingData className="text-center" />;
   }
-  
+
   return (
     <>
       <div className="neumorphism-box">
@@ -104,6 +104,6 @@ function StudentDashboard() {
       </div>
     </>
   );
-}
+};
 
 export default StudentDashboard;

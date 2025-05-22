@@ -1,25 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { ajaxCallWithHeaderOnly } from "../../helpers/ajaxCall";
 import { useSelector } from "react-redux";
 import LoadingData from "../UI/LoadingData";
-function UserCount() {
+
+const UserCount = () => {
   const [data, setData] = useState({
     totalEnq: null,
     totalApp: null,
   });
   const [loadingData, setLoadingData] = useState(true);
-
   const [throwErr, setThrowErr] = useState(null);
+  const authData = useSelector((state) => state.authStore);
 
   useEffect(() => {
     if (throwErr) throw throwErr;
   }, [throwErr]);
 
-  const authData = useSelector((state) => state.authStore);
-  const userCountData = async () => {
+  const userCountData = useCallback(async () => {
     try {
       const response = await ajaxCallWithHeaderOnly(
-        `total/counts/`,
+        "total/counts/",
         {
           Authorization: `Bearer ${authData.accessToken}`,
         },
@@ -47,16 +47,16 @@ function UserCount() {
       setThrowErr({ e, page: "enquiries" });
       return;
     }
-  };
+  },[authData.accessToken]);
 
   useEffect(() => {
     userCountData();
-  }, []);
+  }, [userCountData]);
 
   if (loadingData) {
     return <LoadingData className="text-center" />;
   }
-  
+
   return (
     <>
       <div className="col-md-6">
