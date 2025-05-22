@@ -2,7 +2,7 @@ import { createTheme, alpha } from "@mui/material/styles";
 
 const lavenderTheme = createTheme({
   palette: {
-    mode: 'light', // Force light mode only
+    mode: "light",
     primary: {
       light: "#c5b0e6",
       main: "#9575cd",
@@ -37,9 +37,9 @@ const lavenderTheme = createTheme({
     MuiAppBar: {
       styleOverrides: {
         root: {
-          backgroundColor: '#ffffff',
-          color: '#3f3b5b',
-          boxShadow: '0 2px 10px rgba(149, 117, 205, 0.1)',
+          backgroundColor: "#ffffff",
+          color: "#3f3b5b",
+          boxShadow: "0 2px 10px rgba(149, 117, 205, 0.1)",
         },
       },
     },
@@ -128,11 +128,11 @@ const lavenderTheme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: 12,
-          margin: '4px 8px',
-          '&.Mui-selected': {
-            backgroundColor: alpha('#9575cd', 0.1),
-            '&:hover': {
-              backgroundColor: alpha('#9575cd', 0.15),
+          margin: "4px 8px",
+          "&.Mui-selected": {
+            backgroundColor: alpha("#9575cd", 0.1),
+            "&:hover": {
+              backgroundColor: alpha("#9575cd", 0.15),
             },
           },
         },

@@ -1,7 +1,6 @@
 import React, {
   useEffect,
   useState,
-  useMemo,
   useCallback,
   useRef,
 } from "react";
@@ -20,8 +19,6 @@ import {
   TablePagination,
   CircularProgress,
   ThemeProvider,
-  createTheme,
-  alpha,
   Button,
   IconButton,
   Tooltip,
@@ -55,226 +52,7 @@ import {
   ajaxCallWithoutBody,
 } from "../../helpers/ajaxCall";
 import { uiAction } from "../../store/uiStore";
-
-const getLavenderTheme = (mode) => {
-  const lavenderPalette = {
-    primary: {
-      light: "#c5b0e6",
-      main: "#9575cd",
-      dark: "#7953b3",
-      contrastText: "#fff",
-    },
-    secondary: {
-      light: "#efc0ff",
-      main: "#ba68c8",
-      dark: "#883997",
-      contrastText: "#fff",
-    },
-    success: {
-      light: "#a7d7c5",
-      main: "#66bb6a",
-      dark: "#43a047",
-      contrastText: "#fff",
-    },
-    error: {
-      light: "#ffb3c4",
-      main: "#f06292",
-      dark: "#e91e63",
-      contrastText: "#fff",
-    },
-    info: {
-      light: "#b3e0ff",
-      main: "#64b5f6",
-      dark: "#1976d2",
-      contrastText: "#fff",
-    },
-    warning: {
-      light: "#fff1b8",
-      main: "#ffb74d",
-      dark: "#f57c00",
-      contrastText: "#fff",
-    },
-  };
-  const currentTextColors = {
-    primary: mode === "dark" ? "#f5f3fa" : "#3f3b5b",
-    secondary: mode === "dark" ? "#b8b4d8" : "#69668a",
-  };
-  return createTheme({
-    palette: {
-      mode,
-      ...lavenderPalette,
-      background: {
-        default: mode === "dark" ? "#232139" : "#f5f3fa",
-        paper: mode === "dark" ? "#2d2a45" : "#ffffff",
-      },
-      text: currentTextColors,
-    },
-    shape: { borderRadius: 16 },
-    typography: {
-      fontFamily: [
-        "Poppins",
-        "-apple-system",
-        "BlinkMacSystemFont",
-        '"Segoe UI"',
-        "Roboto",
-        '"Helvetica Neue"',
-        "Arial",
-        "sans-serif",
-      ].join(","),
-    },
-    components: {
-      MuiButton: {
-        styleOverrides: {
-          root: {
-            borderRadius: 12,
-            textTransform: "none",
-            boxShadow: "none",
-            transition: "all 0.2s ease-in-out",
-            padding: "6px 16px",
-            "&:hover": {
-              transform: "translateY(-1px)",
-              boxShadow: `0 4px 10px ${alpha(
-                lavenderPalette.primary.main,
-                0.25
-              )}`,
-            },
-          },
-          contained: {
-            boxShadow: `0 2px 6px ${alpha(lavenderPalette.primary.main, 0.2)}`,
-          },
-          containedPrimary: {
-            backgroundColor: lavenderPalette.primary.main,
-            color: lavenderPalette.primary.contrastText,
-            "&:hover": { backgroundColor: lavenderPalette.primary.dark },
-          },
-        },
-      },
-      MuiPaper: {
-        styleOverrides: {
-          root: { borderRadius: 20 },
-          elevation1: {
-            boxShadow:
-              mode === "dark"
-                ? "0 10px 20px rgba(0,0,0,0.19)"
-                : "0 10px 20px rgba(149,117,205,0.1)",
-          },
-        },
-      },
-      MuiTableCell: {
-        styleOverrides: {
-          head: {
-            backgroundColor:
-              mode === "dark"
-                ? alpha(lavenderPalette.primary.dark, 0.5)
-                : alpha(lavenderPalette.primary.light, 0.4),
-            color:
-              mode === "dark"
-                ? lavenderPalette.primary.light
-                : lavenderPalette.primary.dark,
-            fontWeight: "600",
-            fontSize: "0.875rem",
-            padding: "10px 14px",
-            borderBottom: `1px solid ${
-              mode === "dark"
-                ? alpha(lavenderPalette.primary.light, 0.3)
-                : alpha(lavenderPalette.primary.dark, 0.3)
-            }`,
-          },
-          body: {
-            color: currentTextColors.secondary,
-            borderColor:
-              mode === "dark"
-                ? alpha(currentTextColors.secondary, 0.2)
-                : alpha(currentTextColors.secondary, 0.25),
-            fontSize: "0.8rem",
-            padding: "8px 14px",
-          },
-        },
-      },
-      MuiTableSortLabel: {
-        styleOverrides: {
-          root: {
-            color: "inherit !important",
-            "&:hover": { color: "inherit !important" },
-            "&.Mui-active": { color: "inherit !important" },
-          },
-          icon: {
-            color: "inherit !important",
-            opacity: 0.7,
-            "&:hover": { opacity: 1 },
-          },
-        },
-      },
-      MuiTablePagination: {
-        styleOverrides: {
-          root: {
-            color: currentTextColors.secondary,
-            borderTop: `1px solid ${
-              mode === "dark"
-                ? alpha(currentTextColors.secondary, 0.2)
-                : alpha(currentTextColors.secondary, 0.25)
-            }`,
-          },
-        },
-      },
-      MuiDialog: {
-        styleOverrides: {
-          paper: {
-            borderRadius: 20,
-            boxShadow: `0 10px 30px ${alpha(
-              mode === "dark" ? "#000" : lavenderPalette.primary.main,
-              0.2
-            )}`,
-          },
-        },
-      },
-      MuiDialogTitle: {
-        styleOverrides: {
-          root: {
-            backgroundColor:
-              mode === "dark"
-                ? mode === "dark"
-                  ? "#2d2a45"
-                  : "#ffffff"
-                : lavenderPalette.primary.light,
-            color:
-              mode === "dark"
-                ? lavenderPalette.primary.light
-                : lavenderPalette.primary.dark,
-            fontWeight: "600",
-          },
-        },
-      },
-      MuiTextField: {
-        styleOverrides: {
-          root: {
-            "& .MuiOutlinedInput-root": {
-              borderRadius: 12,
-              backgroundColor:
-                mode === "dark"
-                  ? alpha(currentTextColors.primary, 0.05)
-                  : alpha(currentTextColors.secondary, 0.05),
-              "& fieldset": {
-                borderColor:
-                  mode === "dark"
-                    ? alpha(currentTextColors.secondary, 0.2)
-                    : alpha(currentTextColors.secondary, 0.3),
-              },
-              "&:hover fieldset": {
-                borderColor: lavenderPalette.primary.light,
-              },
-              "&.Mui-focused fieldset": {
-                borderColor: lavenderPalette.primary.main,
-                borderWidth: "1px",
-              },
-            },
-            input: { padding: "10.5px 14px" },
-          },
-        },
-      },
-    },
-  });
-};
+import lavenderTheme from "../../theme";
 
 // Improved parseData function with defensive coding
 const parseData = function (response) {
@@ -379,18 +157,6 @@ const Applications = () => {
 
   const [order, setOrder] = useState("desc");
   const [orderBy, setOrderBy] = useState("created_at");
-
-  const prefersDarkMode =
-    typeof window !== "undefined" &&
-    window.matchMedia &&
-    window.matchMedia("(prefers-color-scheme: dark)").matches;
-
-  const isDarkMode = prefersDarkMode;
-
-  const theme = useMemo(
-    () => getLavenderTheme(isDarkMode ? "dark" : "light"),
-    [isDarkMode]
-  );
 
   useEffect(() => {
     if (throwErr) throw throwErr;
@@ -942,7 +708,7 @@ const Applications = () => {
   );
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={lavenderTheme}>
       <Box
         sx={{
           p: { xs: 2, sm: 3 },
@@ -951,37 +717,6 @@ const Applications = () => {
         }}
       >
         <Paper elevation={1} sx={{ p: { xs: 2, sm: 3 }, mb: 3 }}>
-          <Grid container spacing={2} alignItems="center" sx={{ mb: 2.5 }}>
-            <Grid item xs={12} md={6}>
-              <Typography
-                variant="h5"
-                component="h1"
-                sx={{ fontWeight: "600", color: "primary.dark" }}
-              >
-                Student Applications
-              </Typography>
-            </Grid>
-            <Grid
-              item
-              xs={12}
-              md={6}
-              sx={{
-                display: "flex",
-                justifyContent: { xs: "flex-start", md: "flex-end" },
-              }}
-            >
-              <Button
-                component={RouterLink}
-                to="/application/create"
-                variant="contained"
-                color="primary"
-                startIcon={<AddIcon />}
-              >
-                Create Application
-              </Button>
-            </Grid>
-          </Grid>
-
           <Grid container spacing={2} alignItems="flex-end">
             <Grid item xs={12} sm={6} md={4}>
               <TextField

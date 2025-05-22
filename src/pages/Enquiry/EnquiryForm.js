@@ -1,11 +1,4 @@
-import React, {
-  useTheme,
-  useEffect,
-  useReducer,
-  useState,
-  useMemo,
-  useCallback,
-} from "react";
+import React, { useEffect, useReducer, useState, useCallback } from "react";
 import {
   Box,
   Button,
@@ -28,8 +21,6 @@ import {
   IconButton,
   InputAdornment,
   ThemeProvider,
-  createTheme,
-  alpha,
   CssBaseline,
   Breadcrumbs,
 } from "@mui/material";
@@ -53,284 +44,12 @@ import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import HomeIcon from "@mui/icons-material/Home";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import DarkModeIcon from "@mui/icons-material/DarkMode";
-import LightModeIcon from "@mui/icons-material/LightMode";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import CloseIcon from "@mui/icons-material/Close";
 import { motion } from "framer-motion";
-
-const getLavenderTheme = (mode) => {
-  const lavenderPalette = {
-    primary: {
-      light: "#c5b0e6",
-      main: "#9575cd",
-      dark: "#7953b3",
-      contrastText: "#fff",
-    },
-    secondary: {
-      light: "#efc0ff",
-      main: "#ba68c8",
-      dark: "#883997",
-      contrastText: "#fff",
-    },
-    success: {
-      light: "#a7d7c5",
-      main: "#66bb6a",
-      dark: "#43a047",
-      contrastText: "#fff",
-    },
-    error: {
-      light: "#ffb3c4",
-      main: "#f06292",
-      dark: "#e91e63",
-      contrastText: "#fff",
-    },
-    info: {
-      light: "#b3e0ff",
-      main: "#64b5f6",
-      dark: "#1976d2",
-      contrastText: "#fff",
-    },
-    warning: {
-      light: "#fff1b8",
-      main: "#ffb74d",
-      dark: "#f57c00",
-      contrastText: "#fff",
-    },
-  };
-
-  const currentTextColors = {
-    primary: mode === "dark" ? "#f5f3fa" : "#3f3b5b",
-    secondary: mode === "dark" ? "#b8b4d8" : "#69668a",
-  };
-
-  return createTheme({
-    palette: {
-      mode,
-      ...lavenderPalette,
-      background: {
-        default: mode === "dark" ? "#232139" : "#f5f3fa",
-        paper: mode === "dark" ? "#2d2a45" : "#ffffff",
-      },
-      text: currentTextColors,
-    },
-    shape: { borderRadius: 16 },
-    typography: {
-      fontFamily: [
-        "Poppins",
-        "-apple-system",
-        "BlinkMacSystemFont",
-        '"Segoe UI"',
-        "Roboto",
-        '"Helvetica Neue"',
-        "Arial",
-        "sans-serif",
-      ].join(","),
-    },
-    components: {
-      MuiButton: {
-        styleOverrides: {
-          root: {
-            borderRadius: 12,
-            textTransform: "none",
-            boxShadow: "none",
-            transition: "all 0.2s ease-in-out",
-            padding: "8px 20px",
-            "&:hover": {
-              transform: "translateY(-1px)",
-              boxShadow: `0 4px 10px ${alpha(
-                lavenderPalette.primary.main,
-                0.25
-              )}`,
-            },
-          },
-          contained: {
-            boxShadow: `0 2px 6px ${alpha(lavenderPalette.primary.main, 0.2)}`,
-          },
-          containedPrimary: {
-            backgroundColor: lavenderPalette.primary.main,
-            color: lavenderPalette.primary.contrastText,
-            "&:hover": {
-              backgroundColor: lavenderPalette.primary.dark,
-            },
-          },
-        },
-      },
-      MuiCard: {
-        styleOverrides: {
-          root: {
-            borderRadius: 20,
-            boxShadow:
-              mode === "dark"
-                ? "0 10px 20px rgba(0,0,0,0.25)"
-                : "0 10px 20px rgba(149,117,205,0.12)",
-          },
-        },
-      },
-      MuiPaper: {
-        styleOverrides: {
-          rounded: {
-            borderRadius: 20,
-          },
-        },
-      },
-      MuiTextField: {
-        styleOverrides: {
-          root: {
-            "& .MuiOutlinedInput-root": {
-              borderRadius: 12,
-              backgroundColor:
-                mode === "dark"
-                  ? alpha(currentTextColors.primary, 0.05)
-                  : alpha(currentTextColors.secondary, 0.03),
-              "& fieldset": {
-                borderColor:
-                  mode === "dark"
-                    ? alpha(currentTextColors.secondary, 0.2)
-                    : alpha(currentTextColors.secondary, 0.3),
-              },
-              "&:hover fieldset": {
-                borderColor: lavenderPalette.primary.light,
-              },
-              "&.Mui-focused fieldset": {
-                borderColor: lavenderPalette.primary.main,
-                borderWidth: "1.5px",
-              },
-            },
-            "& .MuiInputLabel-root": {
-              "&.Mui-focused": {
-                color: lavenderPalette.primary.dark,
-              },
-            },
-          },
-        },
-      },
-      MuiFormControl: {
-        styleOverrides: {
-          root: {
-            "& .MuiOutlinedInput-root": {
-              borderRadius: 12,
-              backgroundColor:
-                mode === "dark"
-                  ? alpha(currentTextColors.primary, 0.05)
-                  : alpha(currentTextColors.secondary, 0.03),
-              "& fieldset": {
-                borderColor:
-                  mode === "dark"
-                    ? alpha(currentTextColors.secondary, 0.2)
-                    : alpha(currentTextColors.secondary, 0.3),
-              },
-              "&:hover fieldset": {
-                borderColor: lavenderPalette.primary.light,
-              },
-              "&.Mui-focused fieldset": {
-                borderColor: lavenderPalette.primary.main,
-                borderWidth: "1.5px",
-              },
-            },
-          },
-        },
-      },
-      MuiInputLabel: {
-        styleOverrides: {
-          outlined: {
-            "&.Mui-focused": {
-              color: lavenderPalette.primary.dark,
-            },
-            "&.MuiFormLabel-filled": {
-              transform: "translate(14px, -9px) scale(0.75)",
-              backgroundColor: mode === "dark" ? "#2d2a45" : "#ffffff",
-              paddingLeft: "4px",
-              paddingRight: "4px",
-            },
-          },
-        },
-      },
-      MuiTabs: {
-        styleOverrides: {
-          indicator: {
-            height: 3,
-            borderRadius: "3px 3px 0 0",
-            backgroundColor: lavenderPalette.primary.main,
-          },
-        },
-      },
-      MuiTab: {
-        styleOverrides: {
-          root: {
-            textTransform: "none",
-            fontWeight: 500,
-            borderRadius: "12px 12px 0 0",
-            "&.Mui-selected": {
-              color: lavenderPalette.primary.dark,
-              fontWeight: 600,
-            },
-            "&:hover": {
-              backgroundColor: alpha(lavenderPalette.primary.main, 0.05),
-            },
-          },
-        },
-      },
-      MuiAlert: {
-        styleOverrides: {
-          root: {
-            borderRadius: 12,
-            boxShadow: `0 4px 12px ${alpha(lavenderPalette.error.main, 0.15)}`,
-          },
-        },
-      },
-    },
-  });
-};
-
-// ===== UI COMPONENTS =====
-const ThemeToggle = React.memo(({ darkMode, setDarkMode }) => {
-  const theme = useTheme();
-
-  return (
-    <Box
-      sx={{
-        display: "flex",
-        alignItems: "center",
-        background: darkMode
-          ? "rgba(255, 255, 255, 0.05)"
-          : alpha(theme.palette.primary.main, 0.08),
-        borderRadius: 30,
-        padding: "2px 10px",
-        boxShadow: darkMode
-          ? "none"
-          : `0 2px 8px ${alpha(theme.palette.primary.main, 0.15)}`,
-      }}
-    >
-      <LightModeIcon
-        color={darkMode ? "disabled" : "warning"}
-        sx={{ fontSize: 20 }}
-      />
-      <Switch
-        checked={darkMode}
-        onChange={() => setDarkMode(!darkMode)}
-        color="primary"
-        size="small"
-        sx={{
-          "& .MuiSwitch-switchBase.Mui-checked": {
-            color: theme.palette.primary.main,
-          },
-          "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
-            backgroundColor: theme.palette.primary.light,
-          },
-        }}
-      />
-      <DarkModeIcon
-        color={darkMode ? "primary" : "disabled"}
-        sx={{ fontSize: 20 }}
-      />
-    </Box>
-  );
-});
+import lavenderTheme from "../../theme";
 
 const PageHeader = React.memo(({ title, subtitle, icon, action }) => {
-  const theme = useTheme();
-
   return (
     <Box
       component={motion.div}
@@ -338,18 +57,12 @@ const PageHeader = React.memo(({ title, subtitle, icon, action }) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
       sx={{
-        background:
-          theme.palette.mode === "dark"
-            ? "linear-gradient(135deg, rgba(121, 83, 179, 0.8) 0%, rgba(149, 117, 205, 0.6) 100%)"
-            : "linear-gradient(135deg, rgba(197, 176, 230, 0.8) 0%, rgba(149, 117, 205, 0.9) 100%)",
+        background: `linear-gradient(135deg, ${lavenderTheme.palette.primary.light} 0%, ${lavenderTheme.palette.primary.main} 100%)`,
         borderRadius: 4,
-        boxShadow:
-          theme.palette.mode === "dark"
-            ? "0 10px 30px rgba(0, 0, 0, 0.3)"
-            : `0 10px 30px ${alpha(theme.palette.primary.main, 0.2)}`,
+        boxShadow: `0 10px 30px ${lavenderTheme.palette.primary.dark}30`,
         p: 3,
         mb: 3,
-        color: "#fff",
+        color: lavenderTheme.palette.primary.contrastText,
         position: "relative",
         overflow: "hidden",
       }}
@@ -362,10 +75,7 @@ const PageHeader = React.memo(({ title, subtitle, icon, action }) => {
           bottom: 0,
           left: 0,
           backgroundColor: "transparent",
-          backgroundImage: `radial-gradient(${alpha(
-            "#fff",
-            0.1
-          )} 1px, transparent 1px)`,
+          backgroundImage: `radial-gradient(${lavenderTheme.palette.common.white}26 1px, transparent 1px)`,
           backgroundSize: "20px 20px",
         }}
       />
@@ -413,8 +123,6 @@ const PageHeader = React.memo(({ title, subtitle, icon, action }) => {
 });
 
 const NavigationBreadcrumbs = React.memo(({ items = [] }) => {
-  const theme = useTheme();
-
   return (
     <Breadcrumbs
       separator={<NavigateNextIcon fontSize="small" />}
@@ -422,13 +130,13 @@ const NavigationBreadcrumbs = React.memo(({ items = [] }) => {
       sx={{
         mb: 2.5,
         "& .MuiButton-root": {
-          color: alpha(theme.palette.text.secondary, 0.9),
+          color: lavenderTheme.palette.text.secondary,
           "&:hover": {
-            backgroundColor: alpha(theme.palette.primary.main, 0.05),
+            backgroundColor: lavenderTheme.palette.primary.light,
           },
         },
         "& .MuiTypography-root": {
-          color: theme.palette.text.primary,
+          color: lavenderTheme.palette.text.primary,
         },
       }}
     >
@@ -549,13 +257,6 @@ function EnquiryFormMui(props) {
 
   const params = useParams();
   const enqId = edit ? propEnqId || params.enqId : null;
-
-  // Theme state
-  const [darkMode, setDarkMode] = useState(false);
-  const theme = useMemo(
-    () => getLavenderTheme(darkMode ? "dark" : "light"),
-    [darkMode]
-  );
 
   // Router and Redux
   const navigate = useNavigate();
@@ -959,7 +660,7 @@ function EnquiryFormMui(props) {
     : "Fill in the details below to add a new enquiry.";
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={lavenderTheme}>
       <CssBaseline />
       <Box
         sx={{
@@ -969,17 +670,12 @@ function EnquiryFormMui(props) {
           minHeight: "100vh",
           color: "text.primary",
           transition: "all 0.3s ease",
-          backgroundImage: darkMode
-            ? "radial-gradient(rgba(149, 117, 205, 0.08) 2px, transparent 0)"
-            : "radial-gradient(rgba(149, 117, 205, 0.1) 2px, transparent 0)",
+          backgroundImage: `radial-gradient(${lavenderTheme.palette.primary.light}20 2px, transparent 0)`,
           backgroundSize: "24px 24px",
         }}
       >
         {!isFlow && (
           <>
-            <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
-              <ThemeToggle darkMode={darkMode} setDarkMode={setDarkMode} />
-            </Box>
             <NavigationBreadcrumbs
               items={[
                 { label: "Enquiries", link: "/enquiries" },
@@ -1001,11 +697,11 @@ function EnquiryFormMui(props) {
                     px: 3,
                     py: 1.2,
                     fontSize: "0.9rem",
-                    borderColor: "rgba(255,255,255,0.4)",
-                    color: "#fff",
+                    borderColor: lavenderTheme.palette.primary.contrastText,
+                    color: lavenderTheme.palette.primary.contrastText,
                     "&:hover": {
-                      backgroundColor: "rgba(255,255,255,0.1)",
-                      borderColor: "#fff",
+                      backgroundColor: `${lavenderTheme.palette.primary.contrastText}1A`, // A bit transparent white
+                      borderColor: lavenderTheme.palette.primary.contrastText,
                     },
                   }}
                 >
@@ -1027,7 +723,7 @@ function EnquiryFormMui(props) {
             sx={{
               borderBottom: 1,
               borderColor: "divider",
-              bgcolor: alpha(theme.palette.background.paper, 0.7),
+              bgcolor: lavenderTheme.palette.background.paper, // Changed from alpha(theme.palette.background.paper, 0.7)
             }}
           >
             <Tabs
