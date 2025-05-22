@@ -1,10 +1,4 @@
-import React, {
-  useEffect,
-  useReducer,
-  useState,
-  useMemo,
-  useCallback,
-} from "react";
+import React, { useEffect, useReducer, useState, useCallback } from "react";
 import { useSelector } from "react-redux";
 import {
   Box,
@@ -26,202 +20,15 @@ import {
   DialogContent,
   IconButton,
   ThemeProvider,
-  createTheme,
-  alpha,
-  FormControl, 
+  FormControl,
   InputLabel,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
 import SelectionBox from "../components/UI/Form/SelectionBox";
-import { ajaxCallWithHeaderOnly } from "../helpers/ajaxCall"; 
-import CreateEnquiry from "./Enquiry/CreateEnquiry"; 
-
-const getLavenderTheme = (mode) => {
-  const lavenderPalette = {
-    primary: {
-      light: "#c5b0e6",
-      main: "#9575cd",
-      dark: "#7953b3",
-      contrastText: "#fff",
-    },
-    secondary: {
-      light: "#efc0ff",
-      main: "#ba68c8",
-      dark: "#883997",
-      contrastText: "#fff",
-    },
-    success: {
-      light: "#a7d7c5",
-      main: "#66bb6a",
-      dark: "#43a047",
-      contrastText: "#fff",
-    },
-    error: {
-      light: "#ffb3c4",
-      main: "#f06292",
-      dark: "#e91e63",
-      contrastText: "#fff",
-    },
-    info: {
-      light: "#b3e0ff",
-      main: "#64b5f6",
-      dark: "#1976d2",
-      contrastText: "#fff",
-    },
-    warning: {
-      light: "#fff1b8",
-      main: "#ffb74d",
-      dark: "#f57c00",
-      contrastText: "#fff",
-    },
-  };
-  const currentTextColors = {
-    primary: mode === "dark" ? "#f5f3fa" : "#3f3b5b",
-    secondary: mode === "dark" ? "#b8b4d8" : "#69668a",
-  };
-  return createTheme({
-    palette: {
-      mode,
-      ...lavenderPalette,
-      background: {
-        default: mode === "dark" ? "#232139" : "#f5f3fa",
-        paper: mode === "dark" ? "#2d2a45" : "#ffffff",
-      },
-      text: currentTextColors,
-    },
-    shape: { borderRadius: 16 },
-    typography: {
-      fontFamily: [
-        "Poppins",
-        "-apple-system",
-        "BlinkMacSystemFont",
-        '"Segoe UI"',
-        "Roboto",
-        '"Helvetica Neue"',
-        "Arial",
-        "sans-serif",
-      ].join(","),
-    },
-    components: {
-      MuiButton: {
-        styleOverrides: {
-          root: {
-            borderRadius: 12,
-            textTransform: "none",
-            boxShadow: "none",
-            transition: "all 0.2s ease-in-out",
-            padding: "8px 20px",
-            "&:hover": {
-              transform: "translateY(-1px)",
-              boxShadow: `0 4px 10px ${alpha(
-                lavenderPalette.primary.main,
-                0.25
-              )}`,
-            },
-          },
-          contained: {
-            boxShadow: `0 2px 6px ${alpha(lavenderPalette.primary.main, 0.2)}`,
-          },
-          containedPrimary: {
-            backgroundColor: lavenderPalette.primary.main,
-            color: lavenderPalette.primary.contrastText,
-            "&:hover": { backgroundColor: lavenderPalette.primary.dark },
-          },
-        },
-      },
-      MuiPaper: {
-        styleOverrides: {
-          root: { borderRadius: 20 },
-          elevation1: {
-            boxShadow:
-              mode === "dark"
-                ? "0 10px 20px rgba(0,0,0,0.19)"
-                : "0 10px 20px rgba(149,117,205,0.1)",
-          },
-        },
-      },
-      MuiTextField: {
-        styleOverrides: {
-          root: {
-            "& .MuiOutlinedInput-root": {
-              borderRadius: 12,
-              "& fieldset": {
-                borderColor:
-                  mode === "dark"
-                    ? alpha(currentTextColors.secondary, 0.3)
-                    : alpha(currentTextColors.secondary, 0.4),
-              },
-              "&:hover fieldset": {
-                borderColor: lavenderPalette.primary.light,
-              },
-              "&.Mui-focused fieldset": {
-                borderColor: lavenderPalette.primary.main,
-                borderWidth: "1px",
-              },
-            },
-            input: { padding: "12.5px 14px" },
-          },
-        },
-      },
-      MuiTableCell: {
-        styleOverrides: {
-          head: {
-            backgroundColor:
-              mode === "dark"
-                ? alpha(lavenderPalette.primary.dark, 0.3)
-                : alpha(lavenderPalette.primary.light, 0.2),
-            color: currentTextColors.primary,
-            fontWeight: "600",
-            borderBottom: `1px solid ${
-              mode === "dark"
-                ? alpha(lavenderPalette.primary.light, 0.2)
-                : alpha(lavenderPalette.primary.dark, 0.2)
-            }`,
-          },
-          body: {
-            color: currentTextColors.secondary,
-            borderColor:
-              mode === "dark"
-                ? alpha(currentTextColors.secondary, 0.15)
-                : alpha(currentTextColors.secondary, 0.2),
-          },
-        },
-      },
-      MuiTablePagination: {
-        styleOverrides: { root: { color: currentTextColors.secondary } },
-      },
-      MuiDialogTitle: {
-        styleOverrides: {
-          root: {
-            backgroundColor:
-              mode === "dark"
-                ? mode === "dark"
-                  ? "#2d2a45"
-                  : "#ffffff"
-                : lavenderPalette.primary.light,
-            color:
-              mode === "dark"
-                ? lavenderPalette.primary.light
-                : lavenderPalette.primary.dark,
-            fontWeight: "600",
-          },
-        },
-      },
-      MuiDialog: {
-        styleOverrides: {
-          paper: {
-            borderRadius: 20,
-            boxShadow: `0 10px 30px ${alpha(
-              mode === "dark" ? "#000" : lavenderPalette.primary.main,
-              0.2
-            )}`,
-          },
-        },
-      },
-    },
-  });
-};
+import { ajaxCallWithHeaderOnly } from "../helpers/ajaxCall";
+import CreateEnquiry from "./Enquiry/CreateEnquiry";
+import lavenderTheme from "../theme";
 
 const initialState = {
   name: null,
@@ -272,29 +79,17 @@ const reducer = (state, action) => {
   return { ...state, [action.type]: value, refresh: 1 };
 };
 
-function SearchMui() {
+const Search = () => {
   const [throwErr, setThrowErr] = useState(null);
   const [uniData, setUniData] = useState([]);
   const [isUniLoadingData, setIsUniLoadingData] = useState(false);
-  const [pageNo, setPageNo] = useState(0); 
+  const [pageNo, setPageNo] = useState(0);
   const [perPage, setPerPage] = useState(10);
   const [totalRows, setTotalRows] = useState(0);
   const [enqPopup, setEnqPopup] = useState({ show: false, data: {} });
 
   const [uniState, dispatchUniState] = useReducer(reducer, initialState);
   const authData = useSelector((state) => state.authStore);
-
-  const prefersDarkMode =
-    typeof window !== "undefined" &&
-    window.matchMedia &&
-    window.matchMedia("(prefers-color-scheme: dark)").matches;
-
-  const isDarkMode = prefersDarkMode;
-
-  const theme = useMemo(
-    () => getLavenderTheme(isDarkMode ? "dark" : "light"),
-    [isDarkMode]
-  );
 
   useEffect(() => {
     if (throwErr) throw throwErr;
@@ -436,7 +231,7 @@ function SearchMui() {
   };
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={lavenderTheme}>
       <Box
         sx={{
           p: { xs: 2, sm: 3 },
@@ -630,6 +425,10 @@ function SearchMui() {
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
+              // Styles for DialogTitle specific to lavenderTheme
+              backgroundColor: lavenderTheme.palette.primary.light,
+              color: lavenderTheme.palette.primary.dark,
+              fontWeight: "600",
             }}
           >
             Apply to Course
@@ -657,6 +456,6 @@ function SearchMui() {
       </Box>
     </ThemeProvider>
   );
-}
+};
 
-export default SearchMui;
+export default Search;

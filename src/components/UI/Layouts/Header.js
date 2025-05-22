@@ -51,7 +51,6 @@ const Header = ({ sidebarStateChange }) => {
         >
           Dashboard
         </MuiLink>
-
         {pathSegments.map((segment, index) => {
           const isLast = index === pathSegments.length - 1;
           const path = `/${pathSegments.slice(0, index + 1).join("/")}`;
@@ -112,10 +111,8 @@ const Header = ({ sidebarStateChange }) => {
               >
                 <MenuIcon />
               </IconButton>
-
               {generateBreadcrumbs}
             </Box>
-
             <Box sx={{ display: "flex", alignItems: "center", ml: 2 }}>
               {(currentPathname === "/enquiries" ||
                 currentPathname === "/applications") && (

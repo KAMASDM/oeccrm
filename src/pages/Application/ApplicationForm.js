@@ -7,8 +7,6 @@ import {
   CircularProgress,
   Paper,
   ThemeProvider,
-  createTheme,
-  alpha,
   Divider,
   CssBaseline,
   Container,
@@ -21,107 +19,7 @@ import { uiAction } from "../../store/uiStore";
 import FileUpload from "../../components/UI/Form/FileUpload";
 import SelectionBox from "../../components/UI/Form/SelectionBox";
 import ApplicantDetails from "./ApplicantDetails";
-
-const lavenderTheme = createTheme({
-  palette: {
-    primary: {
-      light: "#c5b0e6",
-      main: "#9575cd",
-      dark: "#7953b3",
-      contrastText: "#fff",
-    },
-    secondary: {
-      light: "#efc0ff",
-      main: "#ba68c8",
-      dark: "#883997",
-      contrastText: "#fff",
-    },
-    success: {
-      light: "#a7d7c5",
-      main: "#66bb6a",
-      dark: "#43a047",
-      contrastText: "#fff",
-    },
-    error: {
-      light: "#ffb3c4",
-      main: "#f06292",
-      dark: "#e91e63",
-      contrastText: "#fff",
-    },
-    info: {
-      light: "#b3e0ff",
-      main: "#64b5f6",
-      dark: "#1976d2",
-      contrastText: "#fff",
-    },
-    warning: {
-      light: "#fff1b8",
-      main: "#ffb74d",
-      dark: "#f57c00",
-      contrastText: "#fff",
-    },
-    background: { default: "#f5f3fa", paper: "#f0eef7" },
-    text: { primary: "#3f3b5b", secondary: "#69668a" },
-  },
-  typography: {
-    fontFamily: [
-      "Poppins",
-      "-apple-system",
-      "BlinkMacSystemFont",
-      '"Segoe UI"',
-      "Roboto",
-      '"Helvetica Neue"',
-      "Arial",
-      "sans-serif",
-    ].join(","),
-    h5: {
-      fontWeight: 600,
-      fontSize: "1.4rem",
-    },
-    h6: {
-      fontWeight: 600,
-      fontSize: "1.2rem",
-    },
-    subtitle1: {
-      fontWeight: 500,
-    },
-  },
-  components: {
-    MuiPaper: {
-      styleOverrides: {
-        root: {
-          borderRadius: 12,
-        },
-      },
-    },
-    MuiButton: {
-      styleOverrides: {
-        contained: {
-          backgroundColor: "#9575cd",
-          color: "#fff",
-          "&:hover": {
-            backgroundColor: "#7953b3",
-          },
-        },
-      },
-    },
-    MuiTextField: {
-      styleOverrides: {
-        root: {
-          "& .MuiOutlinedInput-root": {
-            borderRadius: 8,
-            "&.Mui-focused fieldset": {
-              borderColor: "#9575cd",
-            },
-            "&:hover fieldset": {
-              borderColor: "#9575cd",
-            },
-          },
-        },
-      },
-    },
-  },
-});
+import lavenderTheme from "../../theme";
 
 const UploadBox = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
@@ -135,9 +33,9 @@ const UploadBox = styled(Box)(({ theme }) => ({
   minHeight: 80,
   cursor: "pointer",
   transition: "all 0.2s ease",
-  border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
+  border: `1px solid ${theme.palette.primary.main}`,
   "&:hover": {
-    backgroundColor: alpha(theme.palette.primary.light, 0.1),
+    backgroundColor: theme.palette.primary.light,
   },
 }));
 
@@ -652,7 +550,7 @@ const ApplicationForm = ({ edit, enqID, appId }) => {
                 <Divider
                   sx={{
                     my: 2,
-                    borderColor: alpha(lavenderTheme.palette.primary.main, 0.1),
+                    borderColor: lavenderTheme.palette.primary.main,
                   }}
                 />
                 <Grid container spacing={2}>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import Header from "./UI/Layouts/Header";
@@ -9,29 +9,6 @@ import { uiAction } from "../store/uiStore";
 function Base() {
   const navigate = useNavigate();
 
-  useEffect(() => {
-    window.addEventListener("keydown", function (event) {
-      if (event.altKey && event.key === "a") {
-        navigate("/applications");
-      }
-      if (event.altKey && event.key === "z") {
-        navigate("/application/create");
-      }
-      if (event.altKey && event.key === "c") {
-        navigate("/enquiries");
-      }
-      if (event.altKey && event.key === "q") {
-        navigate("/enquiry/create");
-      }
-      if (event.altKey && event.key === "p") {
-        navigate("/user-profile");
-      }
-      if (event.altKey && event.key === "s") {
-        navigate("/search");
-      }
-    });
-  }, [navigate]);
-
   const uiData = useSelector((state) => state.uiStore);
   const authData = useSelector((state) => state.authStore);
   const dispatch = useDispatch();
@@ -39,7 +16,7 @@ function Base() {
   const [sideBarStatus, setSideBarStatus] = useState(isSmallDevice);
 
   const location = useLocation();
-  const checkRestrictedStaffPath = useEffect(() => {
+  const checkRestrictedStaffPath = useCallback(() => {
     if (
       location.pathname === "/search" ||
       location.pathname === "/university" ||

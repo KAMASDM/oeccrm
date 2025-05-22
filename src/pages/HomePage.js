@@ -20,11 +20,7 @@ import {
   IconButton,
   ListItemAvatar,
   Chip,
-  Switch,
-  useTheme,
   ThemeProvider,
-  createTheme,
-  alpha,
   Menu,
   MenuItem,
   InputBase,
@@ -37,8 +33,6 @@ import {
   Collapse,
   CssBaseline,
 } from "@mui/material";
-import DarkModeIcon from "@mui/icons-material/DarkMode";
-import LightModeIcon from "@mui/icons-material/LightMode";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import AssessmentIcon from "@mui/icons-material/Assessment";
@@ -75,6 +69,7 @@ import {
   Bar,
 } from "recharts";
 import { motion } from "framer-motion";
+import lavenderTheme from "../theme";
 
 const ajaxCallWithHeaderOnly = async (endpoint, headers, method, body) => {
   return new Promise((resolve) => {
@@ -212,281 +207,7 @@ const generateMockChartData = () => ({
   ],
 });
 
-// ----- Custom Lavender Theme -----
-const getLavenderTheme = (mode) => {
-  // Define lavender palette
-  const lavenderPalette = {
-    // Main lavender shades
-    primary: {
-      light: "#c5b0e6",
-      main: "#9575cd",
-      dark: "#7953b3",
-      contrastText: "#fff",
-    },
-    // Secondary lavender-rose shade
-    secondary: {
-      light: "#efc0ff",
-      main: "#ba68c8",
-      dark: "#883997",
-      contrastText: "#fff",
-    },
-    // Various accent colors with lavender tones
-    success: {
-      light: "#a7d7c5",
-      main: "#66bb6a",
-      dark: "#43a047",
-      contrastText: "#fff",
-    },
-    error: {
-      light: "#ffb3c4",
-      main: "#f06292",
-      dark: "#e91e63",
-      contrastText: "#fff",
-    },
-    info: {
-      light: "#b3e0ff",
-      main: "#64b5f6",
-      dark: "#1976d2",
-      contrastText: "#fff",
-    },
-    warning: {
-      light: "#fff1b8",
-      main: "#ffb74d",
-      dark: "#f57c00",
-      contrastText: "#fff",
-    },
-  };
-
-  return createTheme({
-    palette: {
-      mode,
-      ...lavenderPalette,
-      background: {
-        default: mode === "dark" ? "#232139" : "#f5f3fa",
-        paper: mode === "dark" ? "#2d2a45" : "#ffffff",
-      },
-      text: {
-        primary: mode === "dark" ? "#f5f3fa" : "#3f3b5b",
-        secondary: mode === "dark" ? "#b8b4d8" : "#69668a",
-      },
-    },
-    shape: {
-      borderRadius: 16, // Increased border radius for more rounded edges
-    },
-    typography: {
-      fontFamily: [
-        "Poppins",
-        "-apple-system",
-        "BlinkMacSystemFont",
-        '"Segoe UI"',
-        "Roboto",
-        '"Helvetica Neue"',
-        "Arial",
-        "sans-serif",
-      ].join(","),
-    },
-    components: {
-      MuiButton: {
-        styleOverrides: {
-          root: {
-            borderRadius: 12,
-            textTransform: "none",
-            boxShadow: "none",
-            transition: "all 0.2s ease-in-out",
-            "&:hover": {
-              transform: "translateY(-2px)",
-              boxShadow: "0 4px 10px rgba(149, 117, 205, 0.25)",
-            },
-          },
-          contained: {
-            boxShadow: "0 2px 6px rgba(149, 117, 205, 0.2)",
-          },
-        },
-      },
-      MuiCard: {
-        styleOverrides: {
-          root: {
-            borderRadius: 20,
-            boxShadow:
-              mode === "dark"
-                ? "0 10px 20px rgba(0, 0, 0, 0.19)"
-                : "0 10px 20px rgba(149, 117, 205, 0.1)",
-            transition: "transform 0.2s, box-shadow 0.2s",
-            "&:hover": {
-              boxShadow:
-                mode === "dark"
-                  ? "0 15px 30px rgba(0, 0, 0, 0.25)"
-                  : "0 15px 30px rgba(149, 117, 205, 0.15)",
-            },
-            backdropFilter: "blur(8px)",
-            border:
-              mode === "dark" ? "1px solid rgba(255, 255, 255, 0.05)" : "none",
-          },
-        },
-      },
-      MuiChip: {
-        styleOverrides: {
-          root: {
-            borderRadius: 12,
-            fontWeight: 500,
-          },
-        },
-      },
-      MuiAvatar: {
-        styleOverrides: {
-          root: {
-            boxShadow: `0 4px 8px ${
-              mode === "dark"
-                ? "rgba(0, 0, 0, 0.3)"
-                : "rgba(149, 117, 205, 0.2)"
-            }`,
-          },
-        },
-      },
-      MuiPaper: {
-        styleOverrides: {
-          rounded: {
-            borderRadius: 20,
-          },
-        },
-      },
-      MuiTextField: {
-        styleOverrides: {
-          root: {
-            "& .MuiOutlinedInput-root": {
-              borderRadius: 12,
-            },
-          },
-        },
-      },
-      MuiInputBase: {
-        styleOverrides: {
-          root: {
-            borderRadius: 12,
-          },
-        },
-      },
-      MuiTooltip: {
-        styleOverrides: {
-          tooltip: {
-            borderRadius: 12,
-            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.15)",
-            backdropFilter: "blur(4px)",
-            background:
-              mode === "dark"
-                ? "rgba(149, 117, 205, 0.9)"
-                : "rgba(149, 117, 205, 0.95)",
-          },
-        },
-      },
-      MuiListItem: {
-        styleOverrides: {
-          root: {
-            borderRadius: 12,
-            "&:hover": {
-              backgroundColor:
-                mode === "dark"
-                  ? "rgba(255, 255, 255, 0.05)"
-                  : "rgba(149, 117, 205, 0.05)",
-            },
-          },
-        },
-      },
-      MuiListItemButton: {
-        styleOverrides: {
-          root: {
-            borderRadius: 12,
-            "&:hover": {
-              backgroundColor:
-                mode === "dark"
-                  ? "rgba(255, 255, 255, 0.05)"
-                  : "rgba(149, 117, 205, 0.05)",
-            },
-          },
-        },
-      },
-      MuiAlert: {
-        styleOverrides: {
-          root: {
-            borderRadius: 12,
-          },
-        },
-      },
-      MuiTab: {
-        styleOverrides: {
-          root: {
-            borderRadius: "12px 12px 0 0",
-            textTransform: "none",
-          },
-        },
-      },
-      MuiMenu: {
-        styleOverrides: {
-          paper: {
-            borderRadius: 16,
-            boxShadow: "0 8px 16px rgba(0, 0, 0, 0.1)",
-          },
-        },
-      },
-      MuiMenuItem: {
-        styleOverrides: {
-          root: {
-            borderRadius: 8,
-            margin: "2px 6px",
-            "&:first-of-type": {
-              marginTop: 6,
-            },
-            "&:last-of-type": {
-              marginBottom: 6,
-            },
-          },
-        },
-      },
-    },
-  });
-};
-
-const ThemeToggle = ({ darkMode, setDarkMode }) => {
-  return (
-    <Box
-      sx={{
-        display: "flex",
-        alignItems: "center",
-        background: darkMode
-          ? "rgba(255, 255, 255, 0.05)"
-          : "rgba(149, 117, 205, 0.08)",
-        borderRadius: 30,
-        padding: "2px 10px",
-        boxShadow: darkMode ? "none" : "0 2px 8px rgba(149, 117, 205, 0.15)",
-      }}
-    >
-      <LightModeIcon
-        color={darkMode ? "disabled" : "warning"}
-        sx={{ fontSize: 20 }}
-      />
-      <Switch
-        checked={darkMode}
-        onChange={() => setDarkMode(!darkMode)}
-        color="primary"
-        size="small"
-        sx={{
-          "& .MuiSwitch-switchBase.Mui-checked": {
-            color: "#9575cd",
-          },
-          "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
-            backgroundColor: "#c5b0e6",
-          },
-        }}
-      />
-      <DarkModeIcon
-        color={darkMode ? "primary" : "disabled"}
-        sx={{ fontSize: 20 }}
-      />
-    </Box>
-  );
-};
-
-const WelcomeBanner = ({ userName, darkMode }) => {
+const WelcomeBanner = ({ userName }) => {
   return (
     <Box
       component={motion.div}
@@ -494,15 +215,11 @@ const WelcomeBanner = ({ userName, darkMode }) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
       sx={{
-        background: darkMode
-          ? "linear-gradient(135deg, rgba(121, 83, 179, 0.8) 0%, rgba(149, 117, 205, 0.6) 100%)"
-          : "linear-gradient(135deg, rgba(197, 176, 230, 0.8) 0%, rgba(149, 117, 205, 0.9) 100%)",
+        background: `linear-gradient(135deg, ${lavenderTheme.palette.primary.light} 0%, ${lavenderTheme.palette.primary.main} 100%)`,
         borderRadius: 4,
-        boxShadow: darkMode
-          ? "0 10px 30px rgba(0, 0, 0, 0.3)"
-          : "0 10px 30px rgba(149, 117, 205, 0.2)",
+        boxShadow: `0 10px 30px ${lavenderTheme.palette.primary.dark}30`,
         p: 3,
-        color: darkMode ? "#fff" : "#fff",
+        color: lavenderTheme.palette.primary.contrastText,
         position: "relative",
         overflow: "hidden",
       }}
@@ -515,10 +232,7 @@ const WelcomeBanner = ({ userName, darkMode }) => {
           bottom: 0,
           left: 0,
           backgroundColor: "transparent",
-          backgroundImage: `radial-gradient(${alpha(
-            "#fff",
-            0.15
-          )} 1px, transparent 1px)`,
+          backgroundImage: `radial-gradient(${lavenderTheme.palette.common.white}26 1px, transparent 1px)`,
           backgroundSize: "20px 20px",
         }}
       />
@@ -557,11 +271,11 @@ const WelcomeBanner = ({ userName, darkMode }) => {
             variant="contained"
             startIcon={<AssessmentIcon />}
             sx={{
-              bgcolor: alpha("#fff", 0.2),
-              borderColor: alpha("#fff", 0.3),
-              color: "#fff",
+              bgcolor: `${lavenderTheme.palette.common.white}33`,
+              borderColor: `${lavenderTheme.palette.common.white}4D`,
+              color: lavenderTheme.palette.common.white,
               "&:hover": {
-                bgcolor: alpha("#fff", 0.3),
+                bgcolor: `${lavenderTheme.palette.common.white}4D`,
               },
               backdropFilter: "blur(4px)",
               boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
@@ -576,7 +290,7 @@ const WelcomeBanner = ({ userName, darkMode }) => {
 };
 
 const EnhancedKPICard = ({ title, value, icon, trend, color, sx }) => {
-  const theme = useTheme();
+  const theme = lavenderTheme;
   const isPositive = trend && trend.startsWith("+");
   const trendIcon = isPositive ? (
     <TrendingUpIcon fontSize="small" />
@@ -606,14 +320,13 @@ const EnhancedKPICard = ({ title, value, icon, trend, color, sx }) => {
           <Grid item>
             <Avatar
               sx={{
-                bgcolor: alpha(color || theme.palette.primary.main, 0.12),
+                bgcolor: `${color || theme.palette.primary.main}1F`,
                 color: color || theme.palette.primary.main,
                 width: 64,
                 height: 64,
-                boxShadow: `0 4px 12px ${alpha(
-                  color || theme.palette.primary.main,
-                  0.2
-                )}`,
+                boxShadow: `0 4px 12px ${
+                  color || theme.palette.primary.main
+                }33`,
               }}
             >
               {icon}
@@ -642,12 +355,11 @@ const EnhancedKPICard = ({ title, value, icon, trend, color, sx }) => {
                     ml: 1.5,
                     height: 24,
                     borderRadius: 8,
-                    boxShadow: `0 4px 8px ${alpha(
+                    boxShadow: `0 4px 8px ${
                       isPositive
                         ? theme.palette.success.main
-                        : theme.palette.error.main,
-                      0.15
-                    )}`,
+                        : theme.palette.error.main
+                    }26`,
                   }}
                 />
               )}
@@ -660,7 +372,7 @@ const EnhancedKPICard = ({ title, value, icon, trend, color, sx }) => {
 };
 
 const QuickActionsPanel = () => {
-  const theme = useTheme();
+  const theme = lavenderTheme;
   const actions = [
     {
       name: "New Enquiry",
@@ -702,10 +414,7 @@ const QuickActionsPanel = () => {
           variant: "h6",
           fontWeight: "bold",
           sx: {
-            color:
-              theme.palette.mode === "dark"
-                ? theme.palette.primary.light
-                : theme.palette.primary.dark,
+            color: theme.palette.primary.dark,
           },
         }}
         sx={{ pb: 1 }}
@@ -728,31 +437,19 @@ const QuickActionsPanel = () => {
                   gap: 1,
                   borderRadius: 4,
                   color: "text.primary",
-                  bgcolor: alpha(
-                    action.color,
-                    theme.palette.mode === "dark" ? 0.1 : 0.05
-                  ),
-                  border: `1px solid ${alpha(
-                    action.color,
-                    theme.palette.mode === "dark" ? 0.15 : 0.1
-                  )}`,
+                  bgcolor: `${action.color}0D`,
+                  border: `1px solid ${action.color}1A`,
                   transition: "all 0.2s",
                   "&:hover": {
-                    bgcolor: alpha(
-                      action.color,
-                      theme.palette.mode === "dark" ? 0.2 : 0.1
-                    ),
-                    boxShadow: `0 8px 16px ${alpha(action.color, 0.15)}`,
+                    bgcolor: `${action.color}1A`,
+                    boxShadow: `0 8px 16px ${action.color}26`,
                     transform: "translateY(-4px)",
                   },
                 }}
               >
                 <Avatar
                   sx={{
-                    bgcolor: alpha(
-                      action.color,
-                      theme.palette.mode === "dark" ? 0.2 : 0.1
-                    ),
+                    bgcolor: `${action.color}1A`,
                     color: action.color,
                     mb: 1,
                     width: 48,
@@ -776,7 +473,7 @@ const QuickActionsPanel = () => {
 // Enhanced Broadcast Messages
 const EnhancedBroadcastMessages = ({ messages, isLoading }) => {
   const [expanded, setExpanded] = useState(null);
-  const theme = useTheme();
+  const theme = lavenderTheme;
 
   return (
     <Card elevation={0} sx={{ height: "100%", position: "relative" }}>
@@ -785,7 +482,7 @@ const EnhancedBroadcastMessages = ({ messages, isLoading }) => {
           <Avatar
             sx={{
               bgcolor: theme.palette.warning.main,
-              boxShadow: `0 4px 8px ${alpha(theme.palette.warning.main, 0.25)}`,
+              boxShadow: `0 4px 8px ${theme.palette.warning.main}40`,
             }}
           >
             <NotificationsActiveIcon />
@@ -796,19 +493,16 @@ const EnhancedBroadcastMessages = ({ messages, isLoading }) => {
           variant: "h6",
           fontWeight: "bold",
           sx: {
-            color:
-              theme.palette.mode === "dark"
-                ? theme.palette.primary.light
-                : theme.palette.primary.dark,
+            color: theme.palette.primary.dark,
           },
         }}
         action={
           <IconButton
             aria-label="refresh"
             sx={{
-              bgcolor: alpha(theme.palette.primary.main, 0.05),
+              bgcolor: `${theme.palette.primary.main}0D`,
               "&:hover": {
-                bgcolor: alpha(theme.palette.primary.main, 0.1),
+                bgcolor: `${theme.palette.primary.main}1A`,
               },
             }}
           >
@@ -849,10 +543,7 @@ const EnhancedBroadcastMessages = ({ messages, isLoading }) => {
                         width: 28,
                         height: 28,
                         bgcolor: theme.palette.info.light,
-                        boxShadow: `0 2px 4px ${alpha(
-                          theme.palette.info.main,
-                          0.25
-                        )}`,
+                        boxShadow: `0 2px 4px ${theme.palette.info.main}40`,
                       }}
                     >
                       <NotificationsActiveIcon sx={{ fontSize: 16 }} />
@@ -860,20 +551,11 @@ const EnhancedBroadcastMessages = ({ messages, isLoading }) => {
                   }
                   sx={{
                     borderRadius: 3,
-                    boxShadow:
-                      theme.palette.mode === "dark"
-                        ? `0 4px 12px rgba(0, 0, 0, 0.2)`
-                        : `0 4px 12px ${alpha(theme.palette.info.main, 0.15)}`,
-                    border: `1px solid ${alpha(
-                      theme.palette.info.main,
-                      theme.palette.mode === "dark" ? 0.15 : 0.08
-                    )}`,
+                    boxShadow: `0 4px 12px ${theme.palette.info.main}26`,
+                    border: `1px solid ${theme.palette.info.main}15`,
                     "& .MuiAlert-message": { width: "100%" },
                     cursor: "pointer",
-                    backgroundColor:
-                      theme.palette.mode === "dark"
-                        ? alpha(theme.palette.info.dark, 0.1)
-                        : alpha(theme.palette.info.light, 0.1),
+                    backgroundColor: `${theme.palette.info.dark}1A`,
                   }}
                   onClick={() =>
                     setExpanded(expanded === msg.id ? null : msg.id)
@@ -892,9 +574,9 @@ const EnhancedBroadcastMessages = ({ messages, isLoading }) => {
                     <IconButton
                       size="small"
                       sx={{
-                        bgcolor: alpha(theme.palette.background.paper, 0.3),
+                        bgcolor: `${theme.palette.background.paper}4D`,
                         "&:hover": {
-                          bgcolor: alpha(theme.palette.background.paper, 0.5),
+                          bgcolor: `${theme.palette.background.paper}80`,
                         },
                       }}
                     >
@@ -924,9 +606,9 @@ const EnhancedBroadcastMessages = ({ messages, isLoading }) => {
             sx={{
               p: 4,
               textAlign: "center",
-              bgcolor: alpha(theme.palette.background.paper, 0.5),
+              bgcolor: `${theme.palette.background.paper}80`,
               borderRadius: 3,
-              border: `1px dashed ${alpha(theme.palette.primary.main, 0.1)}`,
+              border: `1px dashed ${theme.palette.primary.main}1A`,
             }}
           >
             <Typography color="text.secondary">No new messages</Typography>
@@ -942,7 +624,7 @@ const EnhancedActivityFeed = ({ activities, isLoading }) => {
   const [filter, setFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
-  const theme = useTheme();
+  const theme = lavenderTheme;
 
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -1008,14 +690,11 @@ const EnhancedActivityFeed = ({ activities, isLoading }) => {
           variant: "h6",
           fontWeight: "bold",
           sx: {
-            color:
-              theme.palette.mode === "dark"
-                ? theme.palette.primary.light
-                : theme.palette.primary.dark,
+            color: theme.palette.primary.dark,
           },
         }}
         action={
-          <Box sx={{ display: "flex", gap: 1 }}>
+          <Box sx={{ display: 1, gap: 1 }}>
             <Paper
               component="form"
               elevation={0}
@@ -1026,8 +705,8 @@ const EnhancedActivityFeed = ({ activities, isLoading }) => {
                 width: { xs: 150, sm: 200 },
                 height: 40,
                 borderRadius: 20,
-                border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
-                bgcolor: alpha(theme.palette.background.default, 0.6),
+                border: `1px solid ${theme.palette.primary.main}1A`,
+                bgcolor: `${theme.palette.background.default}99`,
               }}
             >
               <InputBase
@@ -1060,7 +739,7 @@ const EnhancedActivityFeed = ({ activities, isLoading }) => {
               sx={{
                 height: 40,
                 borderRadius: 20,
-                borderColor: alpha(theme.palette.primary.main, 0.2),
+                borderColor: `${theme.palette.primary.main}33`,
               }}
             >
               Filter
@@ -1076,14 +755,8 @@ const EnhancedActivityFeed = ({ activities, isLoading }) => {
                 sx: {
                   mt: 1.5,
                   borderRadius: 3,
-                  boxShadow:
-                    theme.palette.mode === "dark"
-                      ? "0 8px 20px rgba(0, 0, 0, 0.3)"
-                      : "0 8px 20px rgba(149, 117, 205, 0.2)",
-                  border:
-                    theme.palette.mode === "dark"
-                      ? `1px solid ${alpha(theme.palette.primary.main, 0.1)}`
-                      : "none",
+                  boxShadow: `0 8px 20px ${theme.palette.primary.main}33`,
+                  border: `1px solid ${theme.palette.primary.main}1A`,
                 },
               }}
             >
@@ -1153,9 +826,9 @@ const EnhancedActivityFeed = ({ activities, isLoading }) => {
                       edge="end"
                       size="small"
                       sx={{
-                        bgcolor: alpha(theme.palette.primary.main, 0.05),
+                        bgcolor: `${theme.palette.primary.main}0D`,
                         "&:hover": {
-                          bgcolor: alpha(theme.palette.primary.main, 0.1),
+                          bgcolor: `${theme.palette.primary.main}1A`,
                         },
                       }}
                     >
@@ -1177,10 +850,7 @@ const EnhancedActivityFeed = ({ activities, isLoading }) => {
                     transition: "all 0.2s",
                     "&:hover": {
                       transform: "translateX(4px)",
-                      boxShadow:
-                        theme.palette.mode === "dark"
-                          ? "0 4px 12px rgba(0, 0, 0, 0.2)"
-                          : "0 4px 12px rgba(149, 117, 205, 0.1)",
+                      boxShadow: `${theme.palette.primary.main}1A`,
                     },
                   }}
                 >
@@ -1209,11 +879,10 @@ const EnhancedActivityFeed = ({ activities, isLoading }) => {
                     >
                       <Avatar
                         sx={{
-                          bgcolor: alpha(
+                          bgcolor: `${
                             theme.palette[getStatusColor(activity.action_flag)]
-                              .main,
-                            0.15
-                          ),
+                              .main
+                          }26`,
                           color:
                             theme.palette[getStatusColor(activity.action_flag)]
                               .main,
@@ -1301,9 +970,9 @@ const EnhancedActivityFeed = ({ activities, isLoading }) => {
             sx={{
               p: 4,
               textAlign: "center",
-              bgcolor: alpha(theme.palette.background.paper, 0.5),
+              bgcolor: `${theme.palette.background.paper}80`,
               borderRadius: 3,
-              border: `1px dashed ${alpha(theme.palette.primary.main, 0.1)}`,
+              border: `1px dashed ${theme.palette.primary.main}1A`,
             }}
           >
             <Typography color="text.secondary">
@@ -1317,7 +986,7 @@ const EnhancedActivityFeed = ({ activities, isLoading }) => {
           sx={{
             p: 2,
             textAlign: "center",
-            borderTop: `1px solid ${alpha(theme.palette.divider, 0.5)}`,
+            borderTop: `1px solid ${theme.palette.divider}80`,
           }}
         >
           <Button
@@ -1327,7 +996,7 @@ const EnhancedActivityFeed = ({ activities, isLoading }) => {
             sx={{
               color: theme.palette.primary.main,
               "&:hover": {
-                backgroundColor: alpha(theme.palette.primary.main, 0.05),
+                backgroundColor: `${theme.palette.primary.main}0D`,
               },
             }}
           >
@@ -1342,7 +1011,7 @@ const EnhancedActivityFeed = ({ activities, isLoading }) => {
 // Task List with Interactive Elements
 const EnhancedTaskList = ({ tasks, isLoading }) => {
   const [stateTasks, setStateTasks] = useState([]);
-  const theme = useTheme();
+  const theme = lavenderTheme;
 
   useEffect(() => {
     if (tasks?.length > 0) {
@@ -1377,7 +1046,7 @@ const EnhancedTaskList = ({ tasks, isLoading }) => {
             <Avatar
               sx={{
                 bgcolor: theme.palette.error.main,
-                boxShadow: `0 4px 8px ${alpha(theme.palette.error.main, 0.25)}`,
+                boxShadow: `0 4px 8px ${theme.palette.error.main}40`,
               }}
             >
               <AssignmentIcon />
@@ -1389,10 +1058,7 @@ const EnhancedTaskList = ({ tasks, isLoading }) => {
           variant: "h6",
           fontWeight: "bold",
           sx: {
-            color:
-              theme.palette.mode === "dark"
-                ? theme.palette.primary.light
-                : theme.palette.primary.dark,
+            color: theme.palette.primary.dark,
           },
         }}
         subheader={`${pendingTasks} pending, ${
@@ -1402,9 +1068,9 @@ const EnhancedTaskList = ({ tasks, isLoading }) => {
           <Tooltip title="Add New Task" arrow TransitionComponent={Zoom}>
             <IconButton
               sx={{
-                bgcolor: alpha(theme.palette.primary.main, 0.05),
+                bgcolor: `${theme.palette.primary.main}0D`,
                 "&:hover": {
-                  bgcolor: alpha(theme.palette.primary.main, 0.1),
+                  bgcolor: `${theme.palette.primary.main}1A`,
                 },
               }}
             >
@@ -1437,12 +1103,12 @@ const EnhancedTaskList = ({ tasks, isLoading }) => {
                       color={task.completed ? "success" : "default"}
                       sx={{
                         bgcolor: task.completed
-                          ? alpha(theme.palette.success.main, 0.1)
-                          : alpha(theme.palette.action.hover, 0.1),
+                          ? `${theme.palette.success.main}1A`
+                          : `${theme.palette.action.hover}1A`,
                         "&:hover": {
                           bgcolor: task.completed
-                            ? alpha(theme.palette.success.main, 0.2)
-                            : alpha(theme.palette.action.hover, 0.2),
+                            ? `${theme.palette.success.main}33`
+                            : `${theme.palette.action.hover}33`,
                         },
                       }}
                     >
@@ -1456,42 +1122,24 @@ const EnhancedTaskList = ({ tasks, isLoading }) => {
                     mb: 1,
                     borderRadius: 3,
                     bgcolor: task.completed
-                      ? alpha(
-                          theme.palette.success.main,
-                          theme.palette.mode === "dark" ? 0.05 : 0.03
-                        )
+                      ? `${theme.palette.success.main}08`
                       : isOverdue
-                      ? alpha(
-                          theme.palette.error.main,
-                          theme.palette.mode === "dark" ? 0.05 : 0.03
-                        )
+                      ? `${theme.palette.error.main}08`
                       : "transparent",
                     border: `1px solid ${
                       task.completed
-                        ? alpha(
-                            theme.palette.success.main,
-                            theme.palette.mode === "dark" ? 0.1 : 0.05
-                          )
+                        ? `${theme.palette.success.main}0D`
                         : isOverdue
-                        ? alpha(
-                            theme.palette.error.main,
-                            theme.palette.mode === "dark" ? 0.1 : 0.05
-                          )
+                        ? `${theme.palette.error.main}0D`
                         : "transparent"
                     }`,
                     transition: "all 0.2s",
                     "&:hover": {
                       bgcolor: task.completed
-                        ? alpha(
-                            theme.palette.success.main,
-                            theme.palette.mode === "dark" ? 0.08 : 0.05
-                          )
+                        ? `${theme.palette.success.main}14`
                         : isOverdue
-                        ? alpha(
-                            theme.palette.error.main,
-                            theme.palette.mode === "dark" ? 0.08 : 0.05
-                          )
-                        : alpha(theme.palette.action.hover, 0.05),
+                        ? `${theme.palette.error.main}14`
+                        : `${theme.palette.action.hover}0D`,
                     },
                   }}
                   component={motion.div}
@@ -1551,9 +1199,9 @@ const EnhancedTaskList = ({ tasks, isLoading }) => {
             sx={{
               p: 4,
               textAlign: "center",
-              bgcolor: alpha(theme.palette.success.main, 0.05),
+              bgcolor: `${theme.palette.success.main}0D`,
               borderRadius: 3,
-              border: `1px dashed ${alpha(theme.palette.success.main, 0.2)}`,
+              border: `1px dashed ${theme.palette.success.main}33`,
             }}
           >
             <CheckCircleIcon
@@ -1576,7 +1224,7 @@ const EnhancedTaskList = ({ tasks, isLoading }) => {
           sx={{
             p: 2,
             textAlign: "center",
-            borderTop: `1px solid ${alpha(theme.palette.divider, 0.5)}`,
+            borderTop: `1px solid ${theme.palette.divider}80`,
           }}
         >
           <Button
@@ -1588,7 +1236,7 @@ const EnhancedTaskList = ({ tasks, isLoading }) => {
             sx={{
               color: theme.palette.primary.main,
               "&:hover": {
-                backgroundColor: alpha(theme.palette.primary.main, 0.05),
+                backgroundColor: `${theme.palette.primary.main}0D`,
               },
             }}
           >
@@ -1603,7 +1251,7 @@ const EnhancedTaskList = ({ tasks, isLoading }) => {
 // Interactive Recent Items List with Tabs
 const EnhancedRecentItemsList = ({ title, items, isLoading, itemType }) => {
   const [tabValue, setTabValue] = useState(0);
-  const theme = useTheme();
+  const theme = lavenderTheme;
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
@@ -1725,12 +1373,11 @@ const EnhancedRecentItemsList = ({ title, items, isLoading, itemType }) => {
                 itemType === "Enquiry"
                   ? theme.palette.secondary.main
                   : theme.palette.info.main,
-              boxShadow: `0 4px 8px ${alpha(
+              boxShadow: `0 4px 8px ${
                 itemType === "Enquiry"
                   ? theme.palette.secondary.main
-                  : theme.palette.info.main,
-                0.25
-              )}`,
+                  : theme.palette.info.main
+              }40`,
             }}
           >
             {itemType === "Enquiry" ? <HelpOutlineIcon /> : <SchoolIcon />}
@@ -1741,10 +1388,7 @@ const EnhancedRecentItemsList = ({ title, items, isLoading, itemType }) => {
           variant: "h6",
           fontWeight: "bold",
           sx: {
-            color:
-              theme.palette.mode === "dark"
-                ? theme.palette.primary.light
-                : theme.palette.primary.dark,
+            color: theme.palette.primary.dark,
           },
         }}
         action={
@@ -1757,7 +1401,7 @@ const EnhancedRecentItemsList = ({ title, items, isLoading, itemType }) => {
             sx={{
               color: theme.palette.primary.main,
               "&:hover": {
-                backgroundColor: alpha(theme.palette.primary.main, 0.05),
+                backgroundColor: `${theme.palette.primary.main}0D`,
               },
             }}
           >
@@ -1805,8 +1449,8 @@ const EnhancedRecentItemsList = ({ title, items, isLoading, itemType }) => {
                       bgcolor:
                         tabValue ===
                         getTabs().findIndex((t) => t.label === tab.label)
-                          ? alpha(theme.palette.primary.main, 0.2)
-                          : alpha(theme.palette.action.hover, 0.1),
+                          ? `${theme.palette.primary.main}33`
+                          : `${theme.palette.action.hover}1A`,
                     }}
                   />
                 </Box>
@@ -1869,7 +1513,7 @@ const EnhancedRecentItemsList = ({ title, items, isLoading, itemType }) => {
                   divider={index < displayItems.length - 1}
                   disablePadding
                   secondaryAction={
-                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                    <Box sx={{ display: 1, alignItems: "center" }}>
                       <Chip
                         label={status}
                         size="small"
@@ -1878,10 +1522,7 @@ const EnhancedRecentItemsList = ({ title, items, isLoading, itemType }) => {
                         sx={{
                           mr: 1.5,
                           fontWeight: "medium",
-                          boxShadow: `0 2px 4px ${alpha(
-                            theme.palette[statusColorCode].main,
-                            0.2
-                          )}`,
+                          boxShadow: `0 2px 4px ${theme.palette[statusColorCode].main}33`,
                         }}
                       />
                       <Tooltip
@@ -1898,9 +1539,9 @@ const EnhancedRecentItemsList = ({ title, items, isLoading, itemType }) => {
                           }/${item.id}`}
                           size="small"
                           sx={{
-                            bgcolor: alpha(theme.palette.primary.main, 0.05),
+                            bgcolor: `${theme.palette.primary.main}0D`,
                             "&:hover": {
-                              bgcolor: alpha(theme.palette.primary.main, 0.1),
+                              bgcolor: `${theme.palette.primary.main}1A`,
                             },
                           }}
                         >
@@ -1918,10 +1559,7 @@ const EnhancedRecentItemsList = ({ title, items, isLoading, itemType }) => {
                       transition: "all 0.2s",
                       "&:hover": {
                         transform: "translateX(4px)",
-                        boxShadow:
-                          theme.palette.mode === "dark"
-                            ? "0 4px 12px rgba(0, 0, 0, 0.2)"
-                            : "0 4px 12px rgba(149, 117, 205, 0.1)",
+                        boxShadow: `${theme.palette.primary.main}1A`,
                       },
                     }}
                   >
@@ -1968,9 +1606,9 @@ const EnhancedRecentItemsList = ({ title, items, isLoading, itemType }) => {
             sx={{
               p: 4,
               textAlign: "center",
-              bgcolor: alpha(theme.palette.background.paper, 0.5),
+              bgcolor: `${theme.palette.background.paper}80`,
               borderRadius: 3,
-              border: `1px dashed ${alpha(theme.palette.primary.main, 0.1)}`,
+              border: `1px dashed ${theme.palette.primary.main}1A`,
             }}
           >
             <Typography color="text.secondary">
@@ -1986,7 +1624,7 @@ const EnhancedRecentItemsList = ({ title, items, isLoading, itemType }) => {
 
 // Analytics Section
 const AnalyticsSection = ({ chartData }) => {
-  const theme = useTheme();
+  const theme = lavenderTheme;
   const [activeChart, setActiveChart] = useState("trends");
 
   const COLORS = [
@@ -2064,10 +1702,7 @@ const AnalyticsSection = ({ chartData }) => {
                   backgroundColor: theme.palette.background.paper,
                   borderRadius: 12,
                   border: `1px solid ${theme.palette.divider}`,
-                  boxShadow:
-                    theme.palette.mode === "dark"
-                      ? "0 4px 12px rgba(0, 0, 0, 0.3)"
-                      : "0 4px 12px rgba(149, 117, 205, 0.15)",
+                  boxShadow: `0 4px 12px ${theme.palette.primary.main}26`,
                 }}
               />
               <Area
@@ -2131,10 +1766,7 @@ const AnalyticsSection = ({ chartData }) => {
                   backgroundColor: theme.palette.background.paper,
                   borderRadius: 12,
                   border: `1px solid ${theme.palette.divider}`,
-                  boxShadow:
-                    theme.palette.mode === "dark"
-                      ? "0 4px 12px rgba(0, 0, 0, 0.3)"
-                      : "0 4px 12px rgba(149, 117, 205, 0.15)",
+                  boxShadow: `0 4px 12px ${theme.palette.primary.main}26`,
                 }}
               />
               <Legend
@@ -2184,10 +1816,7 @@ const AnalyticsSection = ({ chartData }) => {
                   backgroundColor: theme.palette.background.paper,
                   borderRadius: 12,
                   border: `1px solid ${theme.palette.divider}`,
-                  boxShadow:
-                    theme.palette.mode === "dark"
-                      ? "0 4px 12px rgba(0, 0, 0, 0.3)"
-                      : "0 4px 12px rgba(149, 117, 205, 0.15)",
+                  boxShadow: `0 4px 12px ${theme.palette.primary.main}26`,
                 }}
               />
               <defs>
@@ -2232,7 +1861,7 @@ const AnalyticsSection = ({ chartData }) => {
           <Avatar
             sx={{
               bgcolor: theme.palette.info.main,
-              boxShadow: `0 4px 8px ${alpha(theme.palette.info.main, 0.25)}`,
+              boxShadow: `0 4px 8px ${theme.palette.info.main}40`,
             }}
           >
             <EqualizerIcon />
@@ -2243,10 +1872,7 @@ const AnalyticsSection = ({ chartData }) => {
           variant: "h6",
           fontWeight: "bold",
           sx: {
-            color:
-              theme.palette.mode === "dark"
-                ? theme.palette.primary.light
-                : theme.palette.primary.dark,
+            color: theme.palette.primary.dark,
           },
         }}
         action={
@@ -2254,7 +1880,7 @@ const AnalyticsSection = ({ chartData }) => {
             sx={{
               display: "flex",
               gap: 0.5,
-              bgcolor: alpha(theme.palette.background.default, 0.6),
+              bgcolor: `${theme.palette.background.default}99`,
               borderRadius: 3,
               p: 0.5,
             }}
@@ -2310,12 +1936,7 @@ const AnalyticsSection = ({ chartData }) => {
 };
 
 const HomePage = () => {
-  const [darkMode, setDarkMode] = useState(false);
-
-  const customTheme = useMemo(
-    () => getLavenderTheme(darkMode ? "dark" : "light"),
-    [darkMode]
-  );
+  const customTheme = lavenderTheme;
 
   const authData = useSelector(
     (state) => state.authStore || { userName: "Demo User", user_type: "admin" }
@@ -2533,22 +2154,15 @@ const HomePage = () => {
           bgcolor: "background.default",
           color: "text.primary",
           transition: "all 0.3s ease",
-          backgroundImage: darkMode
-            ? "radial-gradient(rgba(149, 117, 205, 0.08) 2px, transparent 0)"
-            : "radial-gradient(rgba(149, 117, 205, 0.1) 2px, transparent 0)",
+          backgroundImage: `radial-gradient(${customTheme.palette.primary.light}20 2px, transparent 0)`, // Using customTheme directly
           backgroundSize: "24px 24px",
         }}
       >
-        <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 3 }}>
-          <ThemeToggle darkMode={darkMode} setDarkMode={setDarkMode} />
-        </Box>
+        <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 3 }}></Box>
 
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <WelcomeBanner
-              userName={authData.userName || "User"}
-              darkMode={darkMode}
-            />
+            <WelcomeBanner userName={authData.userName || "User"} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={4}>
