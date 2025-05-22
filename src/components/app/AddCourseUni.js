@@ -3,12 +3,13 @@ import { Button } from "react-bootstrap";
 import UiModal from "../UI/UiModal";
 import CourseUniForm from "./CourseUniForm";
 
-function AddCourseUni(props) {
+const AddCourseUni = ({ appName, appId, country, setRefresherNeeded }) => {
   const [uniFormStatus, setUniFormStatus] = useState(false);
 
   const changeUniFormStatus = () => {
     setUniFormStatus((status) => !status);
   };
+
   return (
     <>
       <div className="col-md-12 text-center mb-3">
@@ -22,12 +23,12 @@ function AddCourseUni(props) {
           title="Apply To University"
           body={
             <CourseUniForm
-              appName={props.appName}
+              appName={appName}
               clssName="col-md-6"
-              appId={props.appId}
+              appId={appId}
               hideModal={changeUniFormStatus}
-              country={props.country}
-              setRefresherNeeded={props.setRefresherNeeded}
+              country={country}
+              setRefresherNeeded={setRefresherNeeded}
             />
           }
         />
@@ -36,6 +37,6 @@ function AddCourseUni(props) {
       )}
     </>
   );
-}
+};
 
 export default AddCourseUni;

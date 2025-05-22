@@ -1,14 +1,11 @@
-import React, { useState } from "react";
-import { ToastContainer } from "react-bootstrap";
-import Button from "react-bootstrap/Button";
-import Col from "react-bootstrap/Col";
-import Row from "react-bootstrap/Row";
+import React from "react";
 import Toast from "react-bootstrap/Toast";
 import { useDispatch } from "react-redux";
 import { uiAction } from "../../store/uiStore";
 
-function Notification(props) {
+const Notification = ({ show, heading, msg }) => {
   const dispatch = useDispatch();
+
   return (
     <div aria-live="polite" aria-atomic="true">
       <div className="notification-card">
@@ -22,20 +19,18 @@ function Notification(props) {
               })
             )
           }
-          show={props.show}
+          show={show}
           delay={3000}
           autohide
         >
           <Toast.Header>
-            <strong className="me-auto">{props.heading}</strong>
+            <strong className="me-auto">{heading}</strong>
           </Toast.Header>
-          <Toast.Body
-            dangerouslySetInnerHTML={{ __html: props.msg }}
-          ></Toast.Body>
+          <Toast.Body dangerouslySetInnerHTML={{ __html: msg }}></Toast.Body>
         </Toast>
       </div>
     </div>
   );
-}
+};
 
 export default Notification;

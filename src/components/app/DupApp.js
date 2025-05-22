@@ -1,14 +1,15 @@
 import React from "react";
-import { ajaxCallWithHeaderOnly } from "../../helpers/ajaxCall";
 import { useDispatch, useSelector } from "react-redux";
 import { uiAction } from "../../store/uiStore";
+import { ajaxCallWithHeaderOnly } from "../../helpers/ajaxCall";
 
-function DupApp(props) {
+const DupApp = ({ appID, name, refresh }) => {
   const dispatch = useDispatch();
   const authData = useSelector((state) => state.authStore);
-  const dupApplication = async function () {
+
+  const dupApplication = async () => {
     const response = await ajaxCallWithHeaderOnly(
-      `duplicate-application/${props.appID}`,
+      `duplicate-application/${appID}`,
       {
         Authorization: `Bearer ${authData.accessToken}`,
       },
@@ -29,12 +30,12 @@ function DupApp(props) {
       uiAction.setNotification({
         show: true,
         heading: "Application",
-        msg: `<strong>${props.name}</strong> Application Duplicated Succesfully`,
+        msg: `<strong>${name}</strong> Application Duplicated Succesfully`,
       })
     );
-    props.refresh(true);
+    refresh(true);
   };
-  
+
   return (
     <button
       className="enquiryAction"
@@ -62,6 +63,6 @@ function DupApp(props) {
       </svg>
     </button>
   );
-}
+};
 
 export default DupApp;

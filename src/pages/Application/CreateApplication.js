@@ -2,7 +2,8 @@ import React from "react";
 import "react-select-search/style.css";
 import ApplicationForm from "./ApplicationForm";
 import { useParams } from "react-router-dom";
-function CreateApplication() {
+
+const CreateApplication = () => {
   const enqId = useParams().appID;
   return (
     <ApplicationForm
@@ -13,6 +14,6 @@ function CreateApplication() {
       enqSelectionDisable={enqId ? true : false}
     />
   );
-}
+};
 
 export default CreateApplication;

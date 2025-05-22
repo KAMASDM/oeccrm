@@ -1,6 +1,7 @@
 import React from "react";
 import "../../../assets/css/LoaderUni.css";
-function LoaderUni() {
+
+const LoaderUni = () => {
   return (
     <div className="loaderMain">
       <div className="cardLoader">
@@ -21,6 +22,6 @@ function LoaderUni() {
       </div>
     </div>
   );
-}
+};
 
 export default LoaderUni;

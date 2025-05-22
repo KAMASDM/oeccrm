@@ -1,22 +1,23 @@
 import React from "react";
-import { ajaxCall } from "../../helpers/ajaxCall";
 import { useDispatch, useSelector } from "react-redux";
+import { ajaxCall } from "../../helpers/ajaxCall";
 import { uiAction } from "../../store/uiStore";
 
-function DupEnq(props) {
+const DupEnq = ({ data, refresh }) => {
   const dispatch = useDispatch();
   const authData = useSelector((state) => state.authStore);
-  const dupEnq = async function () {
+
+  const dupEnq = async () => {
     const enqData = {
-      student_name: props.data.student_name,
-      student_phone: props.data.student_phone,
-      student_email: props.data.student_email,
-      student_address: props.data.student_address,
-      current_education: props.data.current_educationId,
-      passport_number: props.data.passportNum,
-      married: props.data.married,
-      nationality: props.data.nationality,
-      dob: props.data.dob,
+      student_name: data.student_name,
+      student_phone: data.student_phone,
+      student_email: data.student_email,
+      student_address: data.student_address,
+      current_education: data.current_educationId,
+      passport_number: data.passportNum,
+      married: data.married,
+      nationality: data.nationality,
+      dob: data.dob,
     };
     const response = await ajaxCall(
       "add-enquiry/",
@@ -41,11 +42,12 @@ function DupEnq(props) {
       uiAction.setNotification({
         show: true,
         heading: "Enquiry",
-        msg: `<strong>${props.data.student_name}</strong> enquiry Duplicated Succesfully`,
+        msg: `<strong>${data.student_name}</strong> enquiry Duplicated Succesfully`,
       })
     );
-    props.refresh();
+    refresh();
   };
+  
   return (
     <button
       className="enquiryAction"
@@ -73,6 +75,6 @@ function DupEnq(props) {
       </svg>
     </button>
   );
-}
+};
 
 export default DupEnq;

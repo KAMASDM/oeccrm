@@ -1,9 +1,10 @@
 import React, { useEffect } from "react";
-import useExportPDF from "../../hook/useExportPDF";
-import { uiAction } from "../../store/uiStore";
 import { useDispatch } from "react-redux";
+import { uiAction } from "../../store/uiStore";
+import useExportPDF from "../../hook/useExportPDF";
 import pdfImg from "../../assets/img/pdfIcon.png";
-function ExportPDF(props) {
+
+const ExportPDF = ({ data }) => {
   const [
     isPDFGenerating,
     startPDFGenerating,
@@ -22,43 +23,45 @@ function ExportPDF(props) {
         dispatch(
           uiAction.setNotification({
             show: true,
-            heading: `Export PDF`,
-            msg: `PDF Exported`,
+            heading: "Export PDF",
+            msg: "PDF Exported",
           })
         );
       } catch {
         dispatch(
           uiAction.setNotification({
             show: true,
-            heading: `Export PDF`,
-            msg: `Some Problem occured while exporting pdf please try again.`,
+            heading: "Export PDF",
+            msg: "Some Problem occured while exporting pdf please try again.",
           })
         );
         setGeneratedPdfUrl("");
       }
     }
-  }, [generatedPdfUrl]);
-  const generatePdf = function () {
+  }, [dispatch, generatedPdfUrl, setGeneratedPdfUrl]);
+
+  const generatePdf = () => {
     if (!isPDFGenerating) {
       startPDFGenerating(true);
-      setPDFData(props.data);
+      setPDFData(data);
       dispatch(
         uiAction.setNotification({
           show: true,
-          heading: `Export PDF`,
-          msg: `Exporting PDF for ${props.data.name}...`,
+          heading: "Export PDF",
+          msg: `Exporting PDF for ${data.name}...`,
         })
       );
     } else {
       dispatch(
         uiAction.setNotification({
           show: true,
-          heading: `Export PDF`,
-          msg: `Generating PDF, Please Wait`,
+          heading: "Export PDF",
+          msg: "Generating PDF, Please Wait",
         })
       );
     }
   };
+
   return (
     <img
       onClick={generatePdf}
@@ -67,6 +70,6 @@ function ExportPDF(props) {
       alt="Export PDF"
     />
   );
-}
+};
 
 export default ExportPDF;

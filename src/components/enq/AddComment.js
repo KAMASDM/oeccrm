@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Button, Form } from "react-bootstrap";
-import { ajaxCall } from "../../helpers/ajaxCall";
 import { useDispatch, useSelector } from "react-redux";
-import { uiAction } from "../../store/uiStore";
+import { Button, Form } from "react-bootstrap";
 import { FileUploader } from "react-drag-drop-files";
+import { uiAction } from "../../store/uiStore";
+import { ajaxCall } from "../../helpers/ajaxCall";
 
-function AddComment(props) {
+const AddComment = ({ enqId, refresh, fieldName, title }) => {
+  const dispatch = useDispatch();
   const [textBoxStatus, setTextBoxStatus] = useState({
     show: false,
     text: null,
@@ -14,7 +15,7 @@ function AddComment(props) {
   const [throwErr, setThrowErr] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const authData = useSelector((state) => state.authStore);
-  const dispatch = useDispatch();
+
   const cancelComment = () => {
     setTextBoxStatus((textBoxStatus) => {
       return { ...textBoxStatus, show: false };
@@ -25,15 +26,15 @@ function AddComment(props) {
     if (throwErr) throw throwErr;
   }, [throwErr]);
 
-  const sendCommentData = async function (input, file) {
+  const sendCommentData = async (input, file) => {
     setSubmitting(true);
     const formData = new FormData();
-    formData.append("object_id", props.enqId);
+    formData.append("object_id", enqId);
     formData.append("content", input);
     if (file instanceof File) formData.append("uploaded_file", file);
 
     const response = await ajaxCall(
-      `app/postcomment/`,
+      "app/postcomment/",
       {
         Authorization: `Bearer ${authData.accessToken}`,
       },
@@ -59,11 +60,12 @@ function AddComment(props) {
         })
       );
       setTextBoxStatus({ show: false, text: null, upload: null });
-      props.refresh();
+      refresh();
     }
     setSubmitting(false);
   };
-  const addComment = function (e) {
+
+  const addComment = (e) => {
     e.preventDefault();
     if (textBoxStatus.text?.length || textBoxStatus.upload instanceof File) {
       sendCommentData(textBoxStatus.text, textBoxStatus.upload);
@@ -107,8 +109,8 @@ function AddComment(props) {
                   return { ...oldData, show: true, upload: file };
                 });
               }}
-              name={props.fieldName}
-              hoverTitle={props.title}
+              name={fieldName}
+              hoverTitle={title}
               minSize={0.0005}
               maxSize={0.5}
               types={["JPG", "PNG", "GIF", "JPEG", "docs", "pdf"]}
@@ -144,6 +146,6 @@ function AddComment(props) {
       )}
     </div>
   );
-}
+};
 
 export default AddComment;

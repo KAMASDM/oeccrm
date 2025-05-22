@@ -3,8 +3,14 @@ import { Form } from "react-bootstrap";
 import SelectSearch from "react-select-search";
 import { Country, State, City } from "country-state-city";
 
-function CountryStateCity(props) {
-  // get country list
+const CountryStateCity = ({
+  countryVal,
+  stateVal,
+  cityVal,
+  countryChange,
+  stateChange,
+  cityChange,
+}) => {
   const countries = Country.getAllCountries();
 
   const updatedCountries = countries.map((country) => ({
@@ -19,13 +25,14 @@ function CountryStateCity(props) {
       value: state.isoCode,
       ...state,
     }));
+
   const updatedCities = (countryId, stateId) =>
     City.getCitiesOfState(countryId, stateId).map((city) => ({
       name: city.name,
       value: city.name,
       ...city,
     }));
-  console.log("citis are", updatedCities());
+
   return (
     <>
       <Form.Group
@@ -35,14 +42,13 @@ function CountryStateCity(props) {
         <Form.Label>Student Country</Form.Label>
         <SelectSearch
           options={updatedCountries}
-          value={props.countryVal}
-          onChange={props.countryChange}
+          value={countryVal}
+          onChange={countryChange}
           name="country"
           search={true}
           placeholder="Select Country"
         />
       </Form.Group>
-
       <Form.Group
         className="mb-3 col-md-6 selectbox"
         controlId="stuAddressState"
@@ -50,18 +56,15 @@ function CountryStateCity(props) {
         <Form.Label>Student State</Form.Label>
         <SelectSearch
           placeholder={
-            props.countryVal
-              ? "Select State"
-              : "Choose country to get state list"
+            countryVal ? "Select State" : "Choose country to get state list"
           }
-          options={updatedStates(props.countryVal ? props.countryVal : null)}
-          value={props.stateVal}
-          onChange={props.stateChange}
+          options={updatedStates(countryVal ? countryVal : null)}
+          value={stateVal}
+          onChange={stateChange}
           name="state"
           search={true}
         />
       </Form.Group>
-
       <Form.Group
         className="mb-3 col-md-6 selectbox"
         controlId="stuAddressCity"
@@ -69,22 +72,22 @@ function CountryStateCity(props) {
         <Form.Label>Student City</Form.Label>
         <SelectSearch
           placeholder={
-            props.stateVal
+            stateVal
               ? "Select city"
               : "Choose country and state to get city list"
           }
           options={updatedCities(
-            props.countryVal ? props.countryVal : null,
-            props.stateVal ? props.stateVal : null
+            countryVal ? countryVal : null,
+            stateVal ? stateVal : null
           )}
-          value={props.cityVal}
-          onChange={props.cityChange}
+          value={cityVal}
+          onChange={cityChange}
           name="city"
           search={true}
         />
       </Form.Group>
     </>
   );
-}
+};
 
 export default CountryStateCity;

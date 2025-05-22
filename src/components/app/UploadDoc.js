@@ -1,27 +1,34 @@
 import React, { useEffect, useState } from "react";
 import { Button, Spinner } from "react-bootstrap";
-import { FileUploader } from "react-drag-drop-files";
-import { ajaxCall } from "../../helpers/ajaxCall";
 import { useDispatch, useSelector } from "react-redux";
-import { uiAction } from "../../store/uiStore";
+import { FileUploader } from "react-drag-drop-files";
 import UiModal from "../UI/UiModal";
+import { uiAction } from "../../store/uiStore";
+import { ajaxCall } from "../../helpers/ajaxCall";
 
-const UploadDoc = (props) => {
-  const [uploading, setUploading] = useState(false);
-  const authData = useSelector((state) => state.authStore);
+const UploadDoc = ({
+  uploadKey,
+  setRefresherNeeded,
+  title,
+  name,
+  id,
+  changeMode,
+}) => {
   const dispatch = useDispatch();
   const [throwErr, setThrowErr] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const authData = useSelector((state) => state.authStore);
 
   useEffect(() => {
     if (throwErr) throw throwErr;
   }, [throwErr]);
 
-  const uploadFile = async function (id, file) {
+  const uploadFile = async (id, file) => {
     const fdata = new FormData();
-    if (file instanceof File) fdata.append(props.uploadKey, file);
+    if (file instanceof File) fdata.append(uploadKey, file);
     setUploading(true);
     let url = `update-application/${id}/`;
-    if (props.uploadKey === "rcvd_offer_letter" || props.uploadKey === "Sop") {
+    if (uploadKey === "rcvd_offer_letter" || uploadKey === "Sop") {
       url = `get/courseinfo/${id}/`;
     }
     const response = await ajaxCall(
@@ -45,7 +52,7 @@ const UploadDoc = (props) => {
         uiAction.setNotification({
           show: true,
           heading: "Application",
-          msg: `Problem Occured while uploading ${props.title}, Please try again`,
+          msg: `Problem Occured while uploading ${title}, Please try again`,
         })
       );
       closeModal();
@@ -55,21 +62,21 @@ const UploadDoc = (props) => {
       uiAction.setNotification({
         show: true,
         heading: "Application",
-        msg: `${props.title} Uploaded Successfully for ${props.name} `,
+        msg: `${title} Uploaded Successfully for ${name} `,
       })
     );
-    if (props.uploadKey === "rcvd_offer_letter" || props.uploadKey === "Sop") {
+    if (uploadKey === "rcvd_offer_letter" || uploadKey === "Sop") {
     } else {
-      props.setRefresherNeeded(true);
+      setRefresherNeeded(true);
     }
-    props.changeMode((data) => {
-      return { ...data, document: response[props.uploadKey], show: false };
+    changeMode((data) => {
+      return { ...data, document: response[uploadKey], show: false };
     });
     setUploading(false);
   };
 
   const closeModal = () => {
-    props.changeMode((data) => {
+    changeMode((data) => {
       return { ...data, show: false };
     });
   };
@@ -80,7 +87,7 @@ const UploadDoc = (props) => {
         setModalStatus={closeModal}
         showStatus={true}
         showHeader={true}
-        title={`Upload ${props.title} for ${props.name}`}
+        title={`Upload ${title} for ${name}`}
         body={
           uploading ? (
             <div className="text-center uploadingBtn">
@@ -100,7 +107,7 @@ const UploadDoc = (props) => {
               <div className="flexCenter">
                 <FileUploader
                   handleChange={(file) => {
-                    uploadFile(props.id, file);
+                    uploadFile(id, file);
                   }}
                   types={["pdf"]}
                   hoverTitle="Upload Document"

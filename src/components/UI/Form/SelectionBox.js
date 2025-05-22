@@ -3,13 +3,24 @@ import { Form } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import SelectSearch from "react-select-search";
 import { ajaxCallWithHeaderOnly } from "../../../helpers/ajaxCall";
-import "./SelectionBox.css";
 
-function SelectionBox(props) {
-  const authData = useSelector((state) => state.authStore);
-  const [isLoading, setIsLoading] = useState(true);
+const SelectionBox = ({
+  name,
+  url,
+  groupId,
+  onChange,
+  label,
+  isSearch,
+  objKey,
+  value,
+  col,
+  groupClass,
+  disabled,
+}) => {
   const [options, setOptions] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [throwErr, setThrowErr] = useState(null);
+  const authData = useSelector((state) => state.authStore);
 
   useEffect(() => {
     if (throwErr) throw throwErr;
@@ -17,13 +28,13 @@ function SelectionBox(props) {
 
   useEffect(() => {
     if (
-      props.groupId !== "courseFilterApp" &&
-      props.name !== "courseInterested" &&
-      props.name !== "married"
+      groupId !== "courseFilterApp" &&
+      name !== "courseInterested" &&
+      name !== "married"
     ) {
       const data = async () => {
         setIsLoading(true);
-        const response = await ajaxCallWithHeaderOnly(props.url, {
+        const response = await ajaxCallWithHeaderOnly(url, {
           Authorization: `Bearer ${authData.accessToken}`,
         });
         if (response?.isNetwork) {
@@ -38,10 +49,7 @@ function SelectionBox(props) {
           const date = new Date();
           const currentYr = date.getFullYear();
           let ajaxOptions;
-          if (
-            props.url === "intakes/" ||
-            props.url === "intakes/?course_related=true"
-          ) {
+          if (url === "intakes/" || url === "intakes/?course_related=true") {
             ajaxOptions = [...response]
               .map((option) => {
                 const months = {
@@ -89,7 +97,7 @@ function SelectionBox(props) {
               .filter((data) => data);
           } else {
             ajaxOptions = [...response].map((option) => {
-              return { value: option.id, name: option[props.objKey] };
+              return { value: option.id, name: option[objKey] };
             });
           }
           return ajaxOptions;
@@ -103,21 +111,20 @@ function SelectionBox(props) {
         return;
       }
     }
-    if (props.name === "married") {
+    if (name === "married") {
       setIsLoading(false);
-      setOptions(props.col);
+      setOptions(col);
     }
-  }, [props.url]);
+  }, [authData.accessToken, col, groupId, name, objKey, url]);
 
   useEffect(() => {
     if (
-      (props.name === "courseInterested" ||
-        props.groupId === "courseFilterApp") &&
-      props.url.length
+      (name === "courseInterested" || groupId === "courseFilterApp") &&
+      url.length
     ) {
       setIsLoading(true);
       const data = async () => {
-        const response = await ajaxCallWithHeaderOnly(props.url, {
+        const response = await ajaxCallWithHeaderOnly(url, {
           Authorization: `Bearer ${authData.accessToken}`,
         });
         if (response?.isNetwork) {
@@ -130,7 +137,7 @@ function SelectionBox(props) {
         }
         setOptions((options) => {
           const ajaxOptions = [...response].map((option) => {
-            return { value: option.id, name: option[props.objKey] };
+            return { value: option.id, name: option[objKey] };
           });
 
           return ajaxOptions;
@@ -144,15 +151,15 @@ function SelectionBox(props) {
         return;
       }
     }
-  }, [props.url]);
+  }, [authData.accessToken, groupId, name, objKey, url]);
 
   let placeholder = isLoading
     ? "Loading"
     : options?.length
     ? "Select from options"
     : "No Data Found";
-  if (props?.groupId === "courseIntersted") {
-    if (props.url) {
+  if (groupId === "courseIntersted") {
+    if (url) {
       placeholder = isLoading
         ? "Loading"
         : options?.length
@@ -162,8 +169,8 @@ function SelectionBox(props) {
       placeholder =
         "Select University, Intake & Course Level to load the courses";
   }
-  if (props?.groupId === "courseFilterApp") {
-    if (props.url) {
+  if (groupId === "courseFilterApp") {
+    if (url) {
       placeholder = isLoading
         ? "Loading"
         : options?.length
@@ -171,24 +178,23 @@ function SelectionBox(props) {
         : "No Data Found";
     } else placeholder = "Select University to load the courses";
   }
+
   return (
-    <Form.Group className={props.groupClass} controlId={props.groupId}>
-      {props?.label?.length ? (
-        <Form.Label className="text-center itsBlock">{props.label}</Form.Label>
-      ) : (
-        ""
+    <Form.Group className={groupClass} controlId={groupId}>
+      {label?.length && (
+        <Form.Label className="text-center itsBlock">{label}</Form.Label>
       )}
       <SelectSearch
-        disabled={props?.disabled}
+        disabled={disabled}
         options={options}
-        value={props.value}
-        onChange={props.onChange}
-        name={props.name}
-        search={props.isSearch}
+        value={value}
+        onChange={onChange}
+        name={name}
+        search={isSearch}
         placeholder={placeholder}
       />
     </Form.Group>
   );
-}
+};
 
 export default SelectionBox;

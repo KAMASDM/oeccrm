@@ -8,7 +8,8 @@ import {
 } from "../helpers/helperFunctions";
 import { authAction } from "../store/authStore";
 import LoadingData from "./UI/LoadingData";
-export default function AuthRoot(props) {
+
+const AuthRoot = ({ children }) => {
   const dispath = useDispatch();
   const authData = useSelector((state) => state.authStore);
 
@@ -16,7 +17,7 @@ export default function AuthRoot(props) {
     if (!authData.loggedIn) {
       const checkAuth = async () => {
         const localData = getFromLocalStorage("loginInfo", true);
-        if (localData == -1) {
+        if (localData === -1) {
           dispath(
             authAction.setAuthStatus({
               userName: "",
@@ -134,13 +135,15 @@ export default function AuthRoot(props) {
       };
       checkAuth();
     }
-  }, [authData.loggedIn]);
+  }, [authData.loggedIn, dispath]);
 
   if (authData.logInOperation === -1) {
     return <LoadingData className="loading-spinner" />;
   } else if (authData.logInOperation === 0) {
-    return props.children;
+    return children;
   } else if (authData.logInOperation) {
     return <Navigate to="/" />;
   }
-}
+};
+
+export default AuthRoot;

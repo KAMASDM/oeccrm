@@ -1,7 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import DataTable from "react-data-table-component";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import {
   ajaxCallWithHeaderOnly,
   ajaxCallWithoutBody,
@@ -14,7 +13,12 @@ import { uiAction } from "../../store/uiStore";
 import ChangeAssignUser from "../enq/ChangeAssignUser";
 import ChangeStatus from "../app/ChangeStatus";
 
-function CourseUniData(props) {
+const CourseUniData = ({
+  appId,
+  stuName,
+  refreshNeeded,
+  setRefresherNeeded,
+}) => {
   const [enqData, setEnqData] = useState([]);
   const [assignUsrData, setAssignUsrData] = useState([]);
   const [allStatus, setAllStatus] = useState([]);
@@ -24,11 +28,11 @@ function CourseUniData(props) {
   const [isLoadingData, setIsLoadingData] = useState(false);
   const [promptStatus, setPromptStatus] = useState(false);
   const authData = useSelector((state) => state.authStore);
-  const navigate = useNavigate();
   const [throwErr, setThrowErr] = useState(null);
   const dispatch = useDispatch();
   const deleteAppDetails = useRef({});
-  const getAssignUsrData = async function () {
+
+  const getAssignUsrData = useCallback(async () => {
     const response = await ajaxCallWithHeaderOnly("userlist/", {
       Authorization: `Bearer ${authData.accessToken}`,
     });
@@ -49,67 +53,15 @@ function CourseUniData(props) {
         return { value: option.id, name: option.username };
       });
     });
-  };
+  }, [authData.accessToken]);
+
   useEffect(() => {
     if (enqData.length && !assignUsrData.length) {
       getAssignUsrData();
     }
-  }, [enqData]);
+  }, [assignUsrData.length, enqData, getAssignUsrData]);
 
-  useEffect(() => {
-    if (enqData.length && !allStatus.length) {
-      getAllStatusData();
-    }
-  }, [enqData]);
-
-  const getUniData = async (url) => {
-    setIsLoadingData(true);
-    const response = await ajaxCallWithHeaderOnly(
-      url,
-      {
-        Authorization: `Bearer ${authData.accessToken}`,
-      },
-      "GET",
-      null
-    );
-    if (response?.isNetwork) {
-      setThrowErr({ ...response, page: "enquiries" });
-      return;
-    }
-    if (response?.status === 401) {
-      setThrowErr({ ...response, page: "enquiries" });
-      return;
-    }
-    if (response?.results?.length > 0) {
-      setEnqData(response?.results);
-      setTotalRows(response.count);
-    } else {
-      setEnqData([]);
-    }
-    setIsLoadingData(false);
-    props.setRefresherNeeded(false);
-  };
-
-  useEffect(() => {
-    if (props.refreshNeeded)
-      getUniData(`get/courseinfo/?application=${props.appId}`);
-  }, [props.appId, props.refreshNeeded]);
- 
-
-  const handlePerRowsChange = (newPerPage, page) => {
-    setPerPage(newPerPage);
-    setPageNo(page);
-    setEnqData([]);
-    props.setRefresherNeeded(true);
-  };
-
-  // for delete
-  const promptDelete = (student_name, deleteId) => {
-    setPromptStatus(true);
-    deleteAppDetails.current = { name: student_name, id: deleteId };
-  };
-
-  const getAllStatusData = async function () {
+  const getAllStatusData = useCallback(async () => {
     const response = await ajaxCallWithHeaderOnly("appstatus/", {
       Authorization: `Bearer ${authData.accessToken}`,
     });
@@ -130,7 +82,62 @@ function CourseUniData(props) {
         return { value: option.id, name: option.App_status };
       });
     });
+  }, [authData.accessToken]);
+
+  useEffect(() => {
+    if (enqData.length && !allStatus.length) {
+      getAllStatusData();
+    }
+  }, [allStatus.length, enqData, getAllStatusData]);
+
+  const getUniData = useCallback(
+    async (url) => {
+      setIsLoadingData(true);
+      const response = await ajaxCallWithHeaderOnly(
+        url,
+        {
+          Authorization: `Bearer ${authData.accessToken}`,
+        },
+        "GET",
+        null
+      );
+      if (response?.isNetwork) {
+        setThrowErr({ ...response, page: "enquiries" });
+        return;
+      }
+      if (response?.status === 401) {
+        setThrowErr({ ...response, page: "enquiries" });
+        return;
+      }
+      if (response?.results?.length > 0) {
+        setEnqData(response?.results);
+        setTotalRows(response.count);
+      } else {
+        setEnqData([]);
+      }
+      setIsLoadingData(false);
+      setRefresherNeeded(false);
+    },
+    [authData.accessToken, setRefresherNeeded]
+  );
+
+  useEffect(() => {
+    if (refreshNeeded) getUniData(`get/courseinfo/?application=${appId}`);
+  }, [appId, getUniData, refreshNeeded]);
+
+  const handlePerRowsChange = (newPerPage, page) => {
+    setPerPage(newPerPage);
+    setPageNo(page);
+    setEnqData([]);
+    setRefresherNeeded(true);
   };
+
+  // for delete
+  const promptDelete = (student_name, deleteId) => {
+    setPromptStatus(true);
+    deleteAppDetails.current = { name: student_name, id: deleteId };
+  };
+
   const columnsAll = [
     {
       cell: (row) => (
@@ -141,7 +148,7 @@ function CourseUniData(props) {
               className="enquiryAction"
               title="Delete Application"
               onClick={() => {
-                promptDelete(props.stuName, row.id);
+                promptDelete(stuName, row.id);
               }}
             >
               <svg
@@ -246,7 +253,8 @@ function CourseUniData(props) {
     authData.user_type === "superuser"
       ? columnsAll
       : columnsAll.filter((col) => col.name !== "Assigned Users");
-  const deleteApp = async function (deleteId) {
+
+  const deleteApp = async (deleteId) => {
     try {
       setIsLoadingData(true);
       const response = await ajaxCallWithoutBody(
@@ -269,12 +277,13 @@ function CourseUniData(props) {
       );
       deleteAppDetails.current = {};
       setEnqData([]);
-      props.setRefresherNeeded(true);
+      setRefresherNeeded(true);
     } catch (e) {
       setThrowErr({ e, page: "enquiries" });
       return;
     }
   };
+  
   return (
     <>
       <DataTable
@@ -282,7 +291,7 @@ function CourseUniData(props) {
         onChangePage={(page) => {
           setPageNo(page);
           setEnqData([]);
-          props.setRefresherNeeded(true);
+          setRefresherNeeded(true);
         }}
         columns={columns}
         data={enqData}
@@ -353,6 +362,6 @@ function CourseUniData(props) {
       )}
     </>
   );
-}
+};
 
 export default CourseUniData;

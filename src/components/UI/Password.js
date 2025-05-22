@@ -1,20 +1,21 @@
 import React, { useState } from "react";
 import { Col, Form, InputGroup, Row } from "react-bootstrap";
 
-function Password(props) {
+const Password = ({ label, onChange, value }) => {
   const [showPass, setShowPass] = useState(false);
+  
   return (
     <Form.Group as={Row} className="mb-3" controlId="formPlaintextPassword">
       <Form.Label column sm="3">
-        {props.label}
+        {label}
       </Form.Label>
       <Col sm="9">
         <InputGroup className="mb-3">
           <Form.Control
             type={showPass ? "text" : "password"}
             placeholder="Password"
-            onChange={props.onChange}
-            value={props.value}
+            onChange={onChange}
+            value={value}
           />
           <InputGroup.Text
             id="basic-addon1"
@@ -51,6 +52,6 @@ function Password(props) {
       </Col>
     </Form.Group>
   );
-}
+};
 
 export default Password;
