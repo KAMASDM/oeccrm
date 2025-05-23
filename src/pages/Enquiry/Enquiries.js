@@ -34,7 +34,6 @@ import {
   Checkbox,
   Menu,
   Zoom,
-  Breadcrumbs,
   Badge,
   LinearProgress,
   CssBaseline,
@@ -42,8 +41,6 @@ import {
   Paper,
   ThemeProvider,
 } from "@mui/material";
-import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import SearchIcon from "@mui/icons-material/Search";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import EditIcon from "@mui/icons-material/Edit";
@@ -57,7 +54,6 @@ import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import FlagIcon from "@mui/icons-material/Flag";
 import CloseIcon from "@mui/icons-material/Close";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import WarningIcon from "@mui/icons-material/Warning";
 import CommentIcon from "@mui/icons-material/Comment";
 import { motion } from "framer-motion";
@@ -69,123 +65,6 @@ import { uiAction } from "../../store/uiStore";
 import { enqAction } from "../../store/EnqColumns";
 import CommentPopup from "../../components/enq/CommentPopup";
 import lavenderTheme from "../../theme";
-
-// Page Header Component
-const PageHeader = ({ title, subtitle, icon, action }) => {
-  return (
-    <Box
-      component={motion.div}
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      sx={{
-        background: `linear-gradient(135deg, ${lavenderTheme.palette.primary.light} 0%, ${lavenderTheme.palette.primary.main} 100%)`,
-        borderRadius: 4,
-        boxShadow: `0 10px 30px ${lavenderTheme.palette.primary.dark}30`,
-        p: 3,
-        mb: 4,
-        color: lavenderTheme.palette.primary.contrastText,
-        position: "relative",
-        overflow: "hidden",
-      }}
-    >
-      <Box
-        sx={{
-          position: "absolute",
-          top: 0,
-          right: 0,
-          bottom: 0,
-          left: 0,
-          backgroundColor: "transparent",
-          backgroundImage: `radial-gradient(${lavenderTheme.palette.common.white}26 1px, transparent 1px)`,
-          backgroundSize: "20px 20px",
-        }}
-      />
-
-      <Grid container spacing={2} alignItems="center" position="relative">
-        <Grid item>
-          <Avatar
-            sx={{
-              bgcolor: "rgba(255, 255, 255, 0.2)",
-              color: "#fff",
-              width: 50,
-              height: 50,
-              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-            }}
-          >
-            {icon || <HelpOutlineIcon />}
-          </Avatar>
-        </Grid>
-        <Grid item xs>
-          <Typography
-            variant="h4"
-            component="h1"
-            fontWeight="bold"
-            gutterBottom
-            sx={{
-              textShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
-              fontSize: { xs: "1.75rem", md: "2.25rem" },
-            }}
-          >
-            {title}
-          </Typography>
-          {subtitle && (
-            <Typography variant="body1" sx={{ opacity: 0.95, fontWeight: 300 }}>
-              {subtitle}
-            </Typography>
-          )}
-        </Grid>
-        {action && (
-          <Grid item sx={{ textAlign: "right" }}>
-            {action}
-          </Grid>
-        )}
-      </Grid>
-    </Box>
-  );
-};
-
-const NavigationBreadcrumbs = ({ items = [] }) => {
-  return (
-    <Breadcrumbs
-      separator={<NavigateNextIcon fontSize="small" />}
-      aria-label="breadcrumb"
-      sx={{ mb: 2 }}
-    >
-      <Button
-        component={RouterLink}
-        to="/"
-        size="small"
-        startIcon={<HomeIcon fontSize="small" />}
-        sx={{ textTransform: "none" }}
-      >
-        Dashboard
-      </Button>
-      {items.map((item, index) =>
-        item.link ? (
-          <Button
-            key={index}
-            component={RouterLink}
-            to={item.link}
-            size="small"
-            sx={{ textTransform: "none" }}
-          >
-            {item.label}
-          </Button>
-        ) : (
-          <Typography
-            key={index}
-            color="text.primary"
-            fontWeight="medium"
-            variant="body2"
-          >
-            {item.label}
-          </Typography>
-        )
-      )}
-    </Breadcrumbs>
-  );
-};
 
 // Status Chip Component
 const StatusChip = ({ status }) => {
@@ -218,43 +97,6 @@ const StatusChip = ({ status }) => {
       }}
     />
   );
-};
-
-// Improved parseData function with defensive coding
-const parseData = function (response) {
-  if (response?.results?.length) {
-    return response.results.map((data) => {
-      // Safe date handling with defaults
-      const dateObj = new Date(data?.date_created || new Date());
-      const day = dateObj.getDate();
-      const month = dateObj.getMonth() + 1;
-      const year = dateObj.getFullYear();
-      const formattedDate = `${day < 10 ? "0" + day : day}-${
-        month < 10 ? "0" + month : month
-      }-${year}`;
-
-      return {
-        ...data,
-        date_created: formattedDate,
-        added_by: data?.added_by?.username,
-        intake_interested: data?.intake_interested?.intake_month
-          ? `${data?.intake_interested?.intake_month} ${data?.intake_interested?.intake_year}`
-          : "",
-        assigned_users: data?.assigned_users?.username
-          ? data?.assigned_users?.username
-          : "-",
-        assigned_usersId: data?.assigned_users?.id,
-        country_interested: data?.country_interested?.country_name,
-        course_interested: data?.course_interested?.course_name,
-        current_education: data?.current_education?.current_education,
-        current_educationId: data?.current_education?.id,
-        enquiry_status: data?.enquiry_status?.status,
-        level_applying_for: data?.level_applying_for?.levels,
-        university_interested: data?.university_interested?.univ_name,
-      };
-    });
-  }
-  return [];
 };
 
 const Enquiries = () => {
@@ -658,25 +500,6 @@ const Enquiries = () => {
     );
   };
 
-  // Create an action button to add a new enquiry
-  const actionButton = (
-    <Button
-      variant="contained"
-      color="secondary"
-      startIcon={<AddCircleOutlineIcon />}
-      component={RouterLink}
-      to="/enquiry/create"
-      sx={{
-        px: 3,
-        py: 1.2,
-        fontSize: "0.95rem",
-        boxShadow: `0 4px 12px ${lavenderTheme.palette.secondary.main}40`,
-      }}
-    >
-      Add New Enquiry
-    </Button>
-  );
-
   const ActiveFiltersCard = () => {
     if (!hasActiveFilters()) return null;
 
@@ -813,13 +636,13 @@ const Enquiries = () => {
       <Box
         sx={{
           flexGrow: 1,
-          p: { xs: 2, sm: 3 },
+          p: { xs: 2, sm: 3, md: 4 },
           bgcolor: "background.default",
-          minHeight: "100vh",
           color: "text.primary",
           transition: "all 0.3s ease",
-          backgroundImage: `radial-gradient(${lavenderTheme.palette.primary.light}20 2px, transparent 0)`,
+          backgroundImage: `radial-gradient(${lavenderTheme.palette.primary.light}20 2px, transparent 0)`, // Using customTheme directly
           backgroundSize: "24px 24px",
+          borderRadius: "24px",
         }}
       >
         <Card

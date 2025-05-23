@@ -27,7 +27,7 @@ import ErrorPage from "./pages/ErrorPage";
 import Search from "./pages/Search";
 import University from "./pages/University";
 import ErrorBoundary from "./components/ErrorBoundry";
-import StudentDashboard from "./pages/StudentDashboard";
+import StudentDashboard from "./components/Dashboard/StudentDashboard";
 import { useEffect } from "react";
 import Enquriy from "./pages/Enquriy";
 

@@ -17,15 +17,13 @@ import {
   Switch,
   Tabs,
   Tab,
-  Avatar,
   IconButton,
   InputAdornment,
   ThemeProvider,
   CssBaseline,
-  Breadcrumbs,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, Link as RouterLink, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ajaxCall, ajaxCallWithHeaderOnly } from "../../helpers/ajaxCall";
 import { uiAction } from "../../store/uiStore";
 import PersonIcon from "@mui/icons-material/Person";
@@ -41,141 +39,11 @@ import DescriptionIcon from "@mui/icons-material/Description";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import FlagIcon from "@mui/icons-material/Flag";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
-import HomeIcon from "@mui/icons-material/Home";
-import NavigateNextIcon from "@mui/icons-material/NavigateNext";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import CloseIcon from "@mui/icons-material/Close";
 import { motion } from "framer-motion";
 import lavenderTheme from "../../theme";
 
-const PageHeader = React.memo(({ title, subtitle, icon, action }) => {
-  return (
-    <Box
-      component={motion.div}
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      sx={{
-        background: `linear-gradient(135deg, ${lavenderTheme.palette.primary.light} 0%, ${lavenderTheme.palette.primary.main} 100%)`,
-        borderRadius: 4,
-        boxShadow: `0 10px 30px ${lavenderTheme.palette.primary.dark}30`,
-        p: 3,
-        mb: 3,
-        color: lavenderTheme.palette.primary.contrastText,
-        position: "relative",
-        overflow: "hidden",
-      }}
-    >
-      <Box
-        sx={{
-          position: "absolute",
-          top: 0,
-          right: 0,
-          bottom: 0,
-          left: 0,
-          backgroundColor: "transparent",
-          backgroundImage: `radial-gradient(${lavenderTheme.palette.common.white}26 1px, transparent 1px)`,
-          backgroundSize: "20px 20px",
-        }}
-      />
-      <Grid container spacing={2} alignItems="center" position="relative">
-        <Grid item>
-          <Avatar
-            sx={{
-              bgcolor: "rgba(255, 255, 255, 0.2)",
-              color: "#fff",
-              width: 50,
-              height: 50,
-              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-            }}
-          >
-            {icon || <PersonIcon />}
-          </Avatar>
-        </Grid>
-        <Grid item xs>
-          <Typography
-            variant="h4"
-            component="h1"
-            fontWeight="bold"
-            gutterBottom
-            sx={{
-              textShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
-              fontSize: { xs: "1.75rem", md: "2.25rem" },
-            }}
-          >
-            {title}
-          </Typography>
-          {subtitle && (
-            <Typography variant="body1" sx={{ opacity: 0.95, fontWeight: 300 }}>
-              {subtitle}
-            </Typography>
-          )}
-        </Grid>
-        {action && (
-          <Grid item sx={{ textAlign: "right" }}>
-            {action}
-          </Grid>
-        )}
-      </Grid>
-    </Box>
-  );
-});
-
-const NavigationBreadcrumbs = React.memo(({ items = [] }) => {
-  return (
-    <Breadcrumbs
-      separator={<NavigateNextIcon fontSize="small" />}
-      aria-label="breadcrumb"
-      sx={{
-        mb: 2.5,
-        "& .MuiButton-root": {
-          color: lavenderTheme.palette.text.secondary,
-          "&:hover": {
-            backgroundColor: lavenderTheme.palette.primary.light,
-          },
-        },
-        "& .MuiTypography-root": {
-          color: lavenderTheme.palette.text.primary,
-        },
-      }}
-    >
-      <Button
-        component={RouterLink}
-        to="/"
-        size="small"
-        startIcon={<HomeIcon fontSize="small" />}
-        sx={{ textTransform: "none", fontWeight: 400 }}
-      >
-        Dashboard
-      </Button>
-      {items.map((item, index) =>
-        item.link ? (
-          <Button
-            key={index}
-            component={RouterLink}
-            to={item.link}
-            size="small"
-            sx={{ textTransform: "none", fontWeight: 400 }}
-          >
-            {item.label}
-          </Button>
-        ) : (
-          <Typography
-            key={index}
-            color="text.primary"
-            fontWeight="medium"
-            variant="body2"
-          >
-            {item.label}
-          </Typography>
-        )
-      )}
-    </Breadcrumbs>
-  );
-});
-
-// Tab panel component to avoid repetition
 const TabPanel = React.memo(({ children, value, index }) => {
   return (
     <Box
@@ -243,7 +111,6 @@ function formReducer(state, action) {
 function EnquiryFormMui(props) {
   const {
     enqId: propEnqId,
-    title,
     edit = false,
     isFlow = false,
     level,
@@ -652,13 +519,6 @@ function EnquiryFormMui(props) {
     );
   }
 
-  // Dynamic title for the page
-  const pageTitle =
-    title || (edit ? "Edit Enquiry Details" : "Create New Student Enquiry");
-  const pageSubtitle = edit
-    ? `Update information for ${formData.student_name || "student"}`
-    : "Fill in the details below to add a new enquiry.";
-
   return (
     <ThemeProvider theme={lavenderTheme}>
       <CssBaseline />
@@ -674,44 +534,6 @@ function EnquiryFormMui(props) {
           backgroundSize: "24px 24px",
         }}
       >
-        {!isFlow && (
-          <>
-            <NavigationBreadcrumbs
-              items={[
-                { label: "Enquiries", link: "/enquiries" },
-                { label: edit ? "Edit" : "Create" },
-              ]}
-            />
-            <PageHeader
-              title={pageTitle}
-              subtitle={pageSubtitle}
-              icon={<PersonIcon />}
-              action={
-                <Button
-                  variant="outlined"
-                  color="inherit"
-                  startIcon={<ArrowBackIcon />}
-                  component={RouterLink}
-                  to="/enquiries"
-                  sx={{
-                    px: 3,
-                    py: 1.2,
-                    fontSize: "0.9rem",
-                    borderColor: lavenderTheme.palette.primary.contrastText,
-                    color: lavenderTheme.palette.primary.contrastText,
-                    "&:hover": {
-                      backgroundColor: `${lavenderTheme.palette.primary.contrastText}1A`, // A bit transparent white
-                      borderColor: lavenderTheme.palette.primary.contrastText,
-                    },
-                  }}
-                >
-                  Back to List
-                </Button>
-              }
-            />
-          </>
-        )}
-
         <Card
           elevation={1}
           component={motion.div}

@@ -1,7 +1,14 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { ajaxCallWithHeaderOnly } from "../../helpers/ajaxCall";
 import { useSelector } from "react-redux";
-import LoadingData from "../UI/LoadingData";
+import {
+  Grid,
+  Card,
+  Typography,
+  Box,
+  CircularProgress,
+  CardContent,
+} from "@mui/material";
 
 const UserCount = () => {
   const [data, setData] = useState({
@@ -17,62 +24,79 @@ const UserCount = () => {
   }, [throwErr]);
 
   const userCountData = useCallback(async () => {
+    setLoadingData(true);
     try {
       const response = await ajaxCallWithHeaderOnly(
         "total/counts/",
         {
           Authorization: `Bearer ${authData.accessToken}`,
         },
-        "GET",
-        null
+        "GET"
       );
-      if (response?.isNetwork) {
+      if (response?.isNetwork || response?.status === 401 || response?.status) {
         setThrowErr({ ...response, page: "enquiries" });
         return;
       }
-      if (response?.status === 401) {
-        setThrowErr({ ...response, page: "enquiries" });
-        return;
-      }
-      if (response?.status) {
-        setThrowErr({ ...response, page: "enquiries" });
-        return;
-      }
-      setLoadingData(false);
       setData({
         totalApp: response.total_applications,
         totalEnq: response.total_enquiries,
       });
     } catch (e) {
       setThrowErr({ e, page: "enquiries" });
-      return;
+    } finally {
+      setLoadingData(false);
     }
-  },[authData.accessToken]);
+  }, [authData.accessToken]);
 
   useEffect(() => {
     userCountData();
   }, [userCountData]);
 
   if (loadingData) {
-    return <LoadingData className="text-center" />;
+    return (
+      <Grid item xs={12} md={6}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100%",
+          }}
+        >
+          <CircularProgress color="primary" />
+        </Box>
+      </Grid>
+    );
   }
 
   return (
     <>
-      <div className="col-md-6">
-        <div className="neumorphism-box p50">
-          <h4>Total Enquiries Processed</h4>
-          <h5 className="headingHome">{data.totalEnq}</h5>
-        </div>
-      </div>
-      <div className="col-md-6">
-        <div className="neumorphism-box p50">
-          <h4>Total Applications Processed</h4>
-          <h5 className="headingHome">{data.totalApp}</h5>
-        </div>
-      </div>
+      <Grid item xs={12} sm={6}>
+        <Card>
+          <CardContent sx={{ textAlign: "center" }}>
+            <Typography variant="h4" component="h2" gutterBottom>
+              Total Enquiries Processed
+            </Typography>
+            <Typography variant="h5" component="p" color="primary">
+              {data.totalEnq}
+            </Typography>
+          </CardContent>
+        </Card>
+      </Grid>
+      <Grid item xs={12} sm={6}>
+        <Card>
+          <CardContent sx={{ textAlign: "center" }}>
+            <Typography variant="h4" component="h2" gutterBottom>
+              Total Applications Processed
+            </Typography>
+            <Typography variant="h5" component="p" color="primary">
+              {data.totalApp}
+            </Typography>
+          </CardContent>
+        </Card>
+      </Grid>
     </>
   );
-}
+};
 
 export default UserCount;

@@ -10,7 +10,6 @@ import {
   Divider,
   CssBaseline,
   Container,
-  styled,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -20,36 +19,6 @@ import FileUpload from "../../components/UI/Form/FileUpload";
 import SelectionBox from "../../components/UI/Form/SelectionBox";
 import ApplicantDetails from "./ApplicantDetails";
 import lavenderTheme from "../../theme";
-
-const UploadBox = styled(Box)(({ theme }) => ({
-  backgroundColor: theme.palette.background.paper,
-  borderRadius: theme.shape.borderRadius,
-  padding: theme.spacing(2),
-  marginBottom: theme.spacing(2),
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  justifyContent: "center",
-  minHeight: 80,
-  cursor: "pointer",
-  transition: "all 0.2s ease",
-  border: `1px solid ${theme.palette.primary.main}`,
-  "&:hover": {
-    backgroundColor: theme.palette.primary.light,
-  },
-}));
-
-const UploadIcon = styled("div")(({ theme }) => ({
-  color: theme.palette.primary.main,
-  marginBottom: theme.spacing(1),
-  display: "flex",
-  justifyContent: "center",
-}));
-
-const SubmitButton = styled(Button)(({ theme }) => ({
-  padding: theme.spacing(1, 4),
-  marginTop: theme.spacing(2),
-}));
 
 const initialState = {
   enqId: null,
@@ -117,14 +86,32 @@ const DocumentUpload = ({
               href={linkUrl}
               target="_blank"
               rel="noreferrer"
-              style={{ color: "#9575cd" }}
+              style={{ color: lavenderTheme.palette.primary.main }}
             >
               {linkText}
             </a>
           </>
         )}
       </Typography>
-      <UploadBox>
+      <Box
+        sx={(theme) => ({
+          backgroundColor: theme.palette.background.paper,
+          borderRadius: theme.shape.borderRadius,
+          padding: theme.spacing(2),
+          marginBottom: theme.spacing(2),
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: 80,
+          cursor: "pointer",
+          transition: "all 0.2s ease",
+          border: `1px solid ${theme.palette.primary.main}`,
+          "&:hover": {
+            backgroundColor: theme.palette.primary.light,
+          },
+        })}
+      >
         <FileUpload
           isEdit={true}
           onChange={onChange}
@@ -133,7 +120,14 @@ const DocumentUpload = ({
           minUploadSize="0.005"
           maxUploadSize="10"
         />
-        <UploadIcon>
+        <Box
+          sx={(theme) => ({
+            color: theme.palette.primary.main,
+            marginBottom: theme.spacing(1),
+            display: "flex",
+            justifyContent: "center",
+          })}
+        >
           <svg
             width="24"
             height="24"
@@ -163,7 +157,7 @@ const DocumentUpload = ({
               strokeLinejoin="round"
             />
           </svg>
-        </UploadIcon>
+        </Box>
         <Typography variant="body2" color="text.secondary">
           {file
             ? file instanceof File
@@ -171,7 +165,7 @@ const DocumentUpload = ({
               : "File uploaded"
             : "No files uploaded yet"}
         </Typography>
-      </UploadBox>
+      </Box>
     </Box>
   );
 };
@@ -453,10 +447,15 @@ const ApplicationForm = ({ edit, enqID, appId }) => {
       <CssBaseline />
       <Box
         sx={{
-          py: 3,
-          px: 3,
+          flexGrow: 1,
+          p: { xs: 2, sm: 3, md: 4 },
+          minHeight: "100vh",
           bgcolor: "background.default",
-          minHeight: "calc(100vh - 64px)",
+          color: "text.primary",
+          transition: "all 0.3s ease",
+          backgroundImage: `radial-gradient(${lavenderTheme.palette.primary.light}20 2px, transparent 0)`, // Using customTheme directly
+          backgroundSize: "24px 24px",
+          borderRadius: "24px",
         }}
       >
         <Container maxWidth="xl" disableGutters>
@@ -593,10 +592,16 @@ const ApplicationForm = ({ edit, enqID, appId }) => {
                     />
                   </Grid>
                 </Grid>
-                <SubmitButton
+                {/* Replaced SubmitButton with direct Button component */}
+                <Button
                   variant="contained"
                   onClick={submitApp}
                   disabled={loadError.isSubmitting}
+                  sx={(theme) => ({
+                    padding: theme.spacing(1, 4),
+                    marginTop: theme.spacing(2),
+                    // Other button styles are handled by the theme overrides in lavenderTheme.
+                  })}
                 >
                   {loadError.isSubmitting ? (
                     <>
@@ -610,7 +615,7 @@ const ApplicationForm = ({ edit, enqID, appId }) => {
                   ) : (
                     "Submit"
                   )}
-                </SubmitButton>
+                </Button>
                 {loadError.isError &&
                   !loadError.isError.includes("Student Name") && (
                     <Typography color="error" sx={{ mt: 2 }}>
@@ -623,6 +628,7 @@ const ApplicationForm = ({ edit, enqID, appId }) => {
               <Paper elevation={0} sx={{ p: 3, height: "100%" }}>
                 {fileData.enqId ? (
                   <ApplicantDetails
+                    appId={appId}
                     enqId={fileData.enqId}
                     sop={fileData.sop}
                     rcvd_offer_letter={fileData.rcvd_offer_letter}

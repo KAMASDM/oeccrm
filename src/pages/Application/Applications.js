@@ -1,9 +1,4 @@
-import React, {
-  useEffect,
-  useState,
-  useCallback,
-  useRef,
-} from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link as RouterLink } from "react-router-dom";
 import {
@@ -36,7 +31,6 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
-import AddIcon from "@mui/icons-material/Add";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import SearchIcon from "@mui/icons-material/Search";
 import UploadDoc from "../../components/app/UploadDoc";
@@ -328,7 +322,7 @@ const Applications = () => {
     setPageNo(0);
     setRefresherNeeded(true);
   };
-  
+
   const assignedUserFilterToggle = () => {
     setAllEnq((status) => !status);
     setPageNo(0);
@@ -711,9 +705,15 @@ const Applications = () => {
     <ThemeProvider theme={lavenderTheme}>
       <Box
         sx={{
-          p: { xs: 2, sm: 3 },
+          flexGrow: 1,
+          p: { xs: 2, sm: 3, md: 4 },
+          minHeight: "100vh",
           bgcolor: "background.default",
-          minHeight: "calc(100vh - 64px)",
+          color: "text.primary",
+          transition: "all 0.3s ease",
+          backgroundImage: `radial-gradient(${lavenderTheme.palette.primary.light}20 2px, transparent 0)`, // Using customTheme directly
+          backgroundSize: "24px 24px",
+          borderRadius: "24px",
         }}
       >
         <Paper elevation={1} sx={{ p: { xs: 2, sm: 3 }, mb: 3 }}>

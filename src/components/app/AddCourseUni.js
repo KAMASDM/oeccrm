@@ -1,6 +1,8 @@
 import React, { useState } from "react";
-import { Button } from "react-bootstrap";
+import AddIcon from "@mui/icons-material/Add";
+import { Box, Button, ThemeProvider } from "@mui/material";
 import UiModal from "../UI/UiModal";
+import lavenderTheme from "../../theme";
 import CourseUniForm from "./CourseUniForm";
 
 const AddCourseUni = ({ appName, appId, country, setRefresherNeeded }) => {
@@ -11,10 +13,29 @@ const AddCourseUni = ({ appName, appId, country, setRefresherNeeded }) => {
   };
 
   return (
-    <>
-      <div className="col-md-12 text-center mb-3">
-        <Button onClick={changeUniFormStatus}>Apply To University</Button>
-      </div>
+    <ThemeProvider theme={lavenderTheme}>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          mt: 2,
+          mb: 2,
+        }}
+      >
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<AddIcon />}
+          sx={{
+            ml: 1,
+            whiteSpace: "nowrap",
+          }}
+          onClick={changeUniFormStatus}
+        >
+          Apply To University
+        </Button>
+      </Box>
       {uniFormStatus ? (
         <UiModal
           setModalStatus={changeUniFormStatus}
@@ -35,7 +56,7 @@ const AddCourseUni = ({ appName, appId, country, setRefresherNeeded }) => {
       ) : (
         ""
       )}
-    </>
+    </ThemeProvider>
   );
 };
 
