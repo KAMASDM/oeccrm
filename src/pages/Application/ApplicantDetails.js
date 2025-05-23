@@ -3,61 +3,28 @@ import {
   Box,
   Typography,
   CircularProgress,
-  styled,
-  alpha,
+  alpha, 
   Divider,
 } from "@mui/material";
 import { ajaxCallWithHeaderOnly } from "../../helpers/ajaxCall";
 import { useSelector } from "react-redux";
 import SelectionBox from "../../components/UI/Form/SelectionBox";
 import FileUpload from "../../components/UI/Form/FileUpload";
+import lavenderTheme from "../../theme";
 
-const DetailRow = styled(Box)(({ theme }) => ({
-  display: "flex",
-  alignItems: "flex-start",
-  marginBottom: theme.spacing(1.5),
-}));
-
-const DetailLabel = styled(Typography)(({ theme }) => ({
-  minWidth: "180px",
-  color: theme.palette.text.secondary,
-  fontWeight: 500,
-  display: "flex",
-  alignItems: "center",
-}));
-
-const DetailValue = styled(Typography)(({ theme }) => ({
-  flex: 1,
-  wordBreak: "break-word",
-  color: theme.palette.text.primary,
-}));
-
-const UploadBox = styled(Box)(({ theme, isUploaded }) => ({
-  backgroundColor: theme.palette.background.paper,
-  borderRadius: theme.shape.borderRadius,
-  padding: theme.spacing(2),
-  marginBottom: theme.spacing(2),
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  justifyContent: "center",
-  minHeight: 80,
-  cursor: "pointer",
-  transition: "all 0.2s ease",
-  border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
-  "&:hover": {
-    backgroundColor: alpha(theme.palette.primary.light, 0.1),
-  },
-}));
-
-const UploadIcon = styled("div")(({ theme }) => ({
-  color: theme.palette.primary.main,
-  marginBottom: theme.spacing(1),
-  display: "flex",
-  justifyContent: "center",
-}));
-
-function ApplicantDetails(props) {
+const ApplicantDetails = ({
+  enqId,
+  sop,
+  appId,
+  university_interested,
+  course_interested,
+  intake_interested,
+  level_applying_for,
+  dispatchFunction,
+  handleChange,
+  assignedUser,
+  status,
+}) => {
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState(null);
   const authData = useSelector((state) => state.authStore);
@@ -70,7 +37,7 @@ function ApplicantDetails(props) {
   const getEnqdata = useCallback(async () => {
     try {
       const response = await ajaxCallWithHeaderOnly(
-        `enquiries/${props.enqId}/`,
+        `enquiries/${enqId}/`,
         { Authorization: `Bearer ${authData.accessToken}` },
         "POST",
         null
@@ -101,14 +68,14 @@ function ApplicantDetails(props) {
       setThrowErr({ error, page: "applicantDetails" });
       setIsLoading(false);
     }
-  }, [authData.accessToken, props.enqId]);
+  }, [authData.accessToken, enqId]);
 
   useEffect(() => {
-    if (props.enqId) {
+    if (enqId) {
       setIsLoading(true);
       getEnqdata();
     }
-  }, [getEnqdata, props.enqId]);
+  }, [getEnqdata, enqId]);
 
   if (isLoading || !data) {
     return (
@@ -137,24 +104,127 @@ function ApplicantDetails(props) {
         Applicant Details
       </Typography>
 
-      <DetailRow>
-        <DetailLabel>Name</DetailLabel>
-        <DetailValue>: {data.student_name}</DetailValue>
-      </DetailRow>
+      {/* Detail Row structure updated for responsiveness */}
+      <Box
+        sx={(theme) => ({
+          display: "flex",
+          flexDirection: { xs: "column", sm: "row" }, // Stack on xs, flex on sm+
+          alignItems: "flex-start",
+          marginBottom: theme.spacing(1.5),
+        })}
+      >
+        <Typography
+          variant="subtitle1" // Changed to subtitle1 for label prominence
+          sx={(theme) => ({
+            minWidth: { xs: "auto", sm: "180px" }, // Auto width on xs, fixed on sm+
+            color: theme.palette.text.secondary,
+            fontWeight: 500,
+            marginBottom: { xs: theme.spacing(0.5), sm: 0 }, // Add margin bottom on xs for stacking
+          })}
+        >
+          Name
+        </Typography>
+        <Typography
+          variant="body1"
+          sx={(theme) => ({
+            flex: { xs: "none", sm: 1 }, // No flex on xs, flex on sm+
+            wordBreak: "break-word",
+            color: theme.palette.text.primary,
+          })}
+        >
+          : {data.student_name}
+        </Typography>
+      </Box>
 
-      <DetailRow>
-        <DetailLabel>Phone</DetailLabel>
-        <DetailValue>: {data.student_phone || "-"}</DetailValue>
-      </DetailRow>
+      <Box
+        sx={(theme) => ({
+          display: "flex",
+          flexDirection: { xs: "column", sm: "row" },
+          alignItems: "flex-start",
+          marginBottom: theme.spacing(1.5),
+        })}
+      >
+        <Typography
+          variant="subtitle1"
+          sx={(theme) => ({
+            minWidth: { xs: "auto", sm: "180px" },
+            color: theme.palette.text.secondary,
+            fontWeight: 500,
+            marginBottom: { xs: theme.spacing(0.5), sm: 0 },
+          })}
+        >
+          Phone
+        </Typography>
+        <Typography
+          variant="body1"
+          sx={(theme) => ({
+            flex: { xs: "none", sm: 1 },
+            wordBreak: "break-word",
+            color: theme.palette.text.primary,
+          })}
+        >
+          : {data.student_phone || "-"}
+        </Typography>
+      </Box>
 
-      <DetailRow>
-        <DetailLabel>Email Id</DetailLabel>
-        <DetailValue>: {data.student_email || "-"}</DetailValue>
-      </DetailRow>
+      <Box
+        sx={(theme) => ({
+          display: "flex",
+          flexDirection: { xs: "column", sm: "row" },
+          alignItems: "flex-start",
+          marginBottom: theme.spacing(1.5),
+        })}
+      >
+        <Typography
+          variant="subtitle1"
+          sx={(theme) => ({
+            minWidth: { xs: "auto", sm: "180px" },
+            color: theme.palette.text.secondary,
+            fontWeight: 500,
+            marginBottom: { xs: theme.spacing(0.5), sm: 0 },
+          })}
+        >
+          Email Id
+        </Typography>
+        <Typography
+          variant="body1"
+          sx={(theme) => ({
+            flex: { xs: "none", sm: 1 },
+            wordBreak: "break-word",
+            color: theme.palette.text.primary,
+          })}
+        >
+          : {data.student_email || "-"}
+        </Typography>
+      </Box>
 
-      <DetailRow>
-        <DetailLabel>Address</DetailLabel>
-        <DetailValue>
+      <Box
+        sx={(theme) => ({
+          display: "flex",
+          flexDirection: { xs: "column", sm: "row" },
+          alignItems: "flex-start",
+          marginBottom: theme.spacing(1.5),
+        })}
+      >
+        <Typography
+          variant="subtitle1"
+          sx={(theme) => ({
+            minWidth: { xs: "auto", sm: "180px" },
+            color: theme.palette.text.secondary,
+            fontWeight: 500,
+            marginBottom: { xs: theme.spacing(0.5), sm: 0 },
+          })}
+        >
+          Address
+        </Typography>
+        <Typography
+          variant="body1"
+          sx={(theme) => ({
+            flex: { xs: "none", sm: 1 },
+            wordBreak: "break-word",
+            color: theme.palette.text.primary,
+          })}
+        >
           :{" "}
           {data.student_address
             ? `${data.student_address}${data.city ? `, ${data.city}` : ""}${
@@ -163,57 +233,235 @@ function ApplicantDetails(props) {
                 data.zipcode ? ` - ${data.zipcode}` : ""
               }`
             : "-"}
-        </DetailValue>
-      </DetailRow>
+        </Typography>
+      </Box>
 
-      <DetailRow>
-        <DetailLabel>Current Education</DetailLabel>
-        <DetailValue>
+      <Box
+        sx={(theme) => ({
+          display: "flex",
+          flexDirection: { xs: "column", sm: "row" },
+          alignItems: "flex-start",
+          marginBottom: theme.spacing(1.5),
+        })}
+      >
+        <Typography
+          variant="subtitle1"
+          sx={(theme) => ({
+            minWidth: { xs: "auto", sm: "180px" },
+            color: theme.palette.text.secondary,
+            fontWeight: 500,
+            marginBottom: { xs: theme.spacing(0.5), sm: 0 },
+          })}
+        >
+          Current Education
+        </Typography>
+        <Typography
+          variant="body1"
+          sx={(theme) => ({
+            flex: { xs: "none", sm: 1 },
+            wordBreak: "break-word",
+            color: theme.palette.text.primary,
+          })}
+        >
           : {data.current_education?.current_education || "-"}
-        </DetailValue>
-      </DetailRow>
+        </Typography>
+      </Box>
 
-      <DetailRow>
-        <DetailLabel>Previous Visa Refusal</DetailLabel>
-        <DetailValue>: {data.visa_refusal ? "YES" : "NO"}</DetailValue>
-      </DetailRow>
+      <Box
+        sx={(theme) => ({
+          display: "flex",
+          flexDirection: { xs: "column", sm: "row" },
+          alignItems: "flex-start",
+          marginBottom: theme.spacing(1.5),
+        })}
+      >
+        <Typography
+          variant="subtitle1"
+          sx={(theme) => ({
+            minWidth: { xs: "auto", sm: "180px" },
+            color: theme.palette.text.secondary,
+            fontWeight: 500,
+            marginBottom: { xs: theme.spacing(0.5), sm: 0 },
+          })}
+        >
+          Previous Visa Refusal
+        </Typography>
+        <Typography
+          variant="body1"
+          sx={(theme) => ({
+            flex: { xs: "none", sm: 1 },
+            wordBreak: "break-word",
+            color: theme.palette.text.primary,
+          })}
+        >
+          : {data.visa_refusal ? "YES" : "NO"}
+        </Typography>
+      </Box>
 
       {data.visa_refusal && data.visa_file && (
-        <DetailRow>
-          <DetailLabel>Visa Refusal File</DetailLabel>
-          <DetailValue>
+        <Box
+          sx={(theme) => ({
+            display: "flex",
+            flexDirection: { xs: "column", sm: "row" },
+            alignItems: "flex-start",
+            marginBottom: theme.spacing(1.5),
+          })}
+        >
+          <Typography
+            variant="subtitle1"
+            sx={(theme) => ({
+              minWidth: { xs: "auto", sm: "180px" },
+              color: theme.palette.text.secondary,
+              fontWeight: 500,
+              marginBottom: { xs: theme.spacing(0.5), sm: 0 },
+            })}
+          >
+            Visa Refusal File
+          </Typography>
+          <Typography
+            variant="body1"
+            sx={(theme) => ({
+              flex: { xs: "none", sm: 1 },
+              wordBreak: "break-word",
+              color: theme.palette.text.primary,
+            })}
+          >
             :{" "}
             <a
               href={data.visa_file}
               target="_blank"
               rel="noreferrer"
-              style={{ color: "#9575cd" }}
+              style={{ color: lavenderTheme.palette.primary.main }}
             >
               Download
             </a>
-          </DetailValue>
-        </DetailRow>
+          </Typography>
+        </Box>
       )}
 
-      <DetailRow>
-        <DetailLabel>DOB</DetailLabel>
-        <DetailValue>: {formatDate(data.dob)}</DetailValue>
-      </DetailRow>
+      <Box
+        sx={(theme) => ({
+          display: "flex",
+          flexDirection: { xs: "column", sm: "row" },
+          alignItems: "flex-start",
+          marginBottom: theme.spacing(1.5),
+        })}
+      >
+        <Typography
+          variant="subtitle1"
+          sx={(theme) => ({
+            minWidth: { xs: "auto", sm: "180px" },
+            color: theme.palette.text.secondary,
+            fontWeight: 500,
+            marginBottom: { xs: theme.spacing(0.5), sm: 0 },
+          })}
+        >
+          DOB
+        </Typography>
+        <Typography
+          variant="body1"
+          sx={(theme) => ({
+            flex: { xs: "none", sm: 1 },
+            wordBreak: "break-word",
+            color: theme.palette.text.primary,
+          })}
+        >
+          : {formatDate(data.dob)}
+        </Typography>
+      </Box>
 
-      <DetailRow>
-        <DetailLabel>Passport Number</DetailLabel>
-        <DetailValue>: {data.passport_number || "-"}</DetailValue>
-      </DetailRow>
+      <Box
+        sx={(theme) => ({
+          display: "flex",
+          flexDirection: { xs: "column", sm: "row" },
+          alignItems: "flex-start",
+          marginBottom: theme.spacing(1.5),
+        })}
+      >
+        <Typography
+          variant="subtitle1"
+          sx={(theme) => ({
+            minWidth: { xs: "auto", sm: "180px" },
+            color: theme.palette.text.secondary,
+            fontWeight: 500,
+            marginBottom: { xs: theme.spacing(0.5), sm: 0 },
+          })}
+        >
+          Passport Number
+        </Typography>
+        <Typography
+          variant="body1"
+          sx={(theme) => ({
+            flex: { xs: "none", sm: 1 },
+            wordBreak: "break-word",
+            color: theme.palette.text.primary,
+          })}
+        >
+          : {data.passport_number || "-"}
+        </Typography>
+      </Box>
 
-      <DetailRow>
-        <DetailLabel>Is Married</DetailLabel>
-        <DetailValue>: {data.married ? "Yes" : "No"}</DetailValue>
-      </DetailRow>
+      <Box
+        sx={(theme) => ({
+          display: "flex",
+          flexDirection: { xs: "column", sm: "row" },
+          alignItems: "flex-start",
+          marginBottom: theme.spacing(1.5),
+        })}
+      >
+        <Typography
+          variant="subtitle1"
+          sx={(theme) => ({
+            minWidth: { xs: "auto", sm: "180px" },
+            color: theme.palette.text.secondary,
+            fontWeight: 500,
+            marginBottom: { xs: theme.spacing(0.5), sm: 0 },
+          })}
+        >
+          Is Married
+        </Typography>
+        <Typography
+          variant="body1"
+          sx={(theme) => ({
+            flex: { xs: "none", sm: 1 },
+            wordBreak: "break-word",
+            color: theme.palette.text.primary,
+          })}
+        >
+          : {data.married ? "Yes" : "No"}
+        </Typography>
+      </Box>
 
-      <DetailRow>
-        <DetailLabel>Enquiry Date</DetailLabel>
-        <DetailValue>: {formatDate(data.date_created)}</DetailValue>
-      </DetailRow>
+      <Box
+        sx={(theme) => ({
+          display: "flex",
+          flexDirection: { xs: "column", sm: "row" },
+          alignItems: "flex-start",
+          marginBottom: theme.spacing(1.5),
+        })}
+      >
+        <Typography
+          variant="subtitle1"
+          sx={(theme) => ({
+            minWidth: { xs: "auto", sm: "180px" },
+            color: theme.palette.text.secondary,
+            fontWeight: 500,
+            marginBottom: { xs: theme.spacing(0.5), sm: 0 },
+          })}
+        >
+          Enquiry Date
+        </Typography>
+        <Typography
+          variant="body1"
+          sx={(theme) => ({
+            flex: { xs: "none", sm: 1 },
+            wordBreak: "break-word",
+            color: theme.palette.text.primary,
+          })}
+        >
+          : {formatDate(data.date_created)}
+        </Typography>
+      </Box>
 
       <Divider
         sx={{
@@ -222,17 +470,39 @@ function ApplicantDetails(props) {
         }}
       />
 
-      <DetailRow>
-        <DetailLabel>University Interested</DetailLabel>
-        <DetailValue sx={{ alignSelf: "center" }}>:</DetailValue>
-      </DetailRow>
-      <Box sx={{ ml: 3, mr: 0, mb: 2 }}>
+      <Box
+        sx={(theme) => ({
+          display: "flex",
+          flexDirection: { xs: "column", sm: "row" },
+          alignItems: "flex-start",
+          marginBottom: theme.spacing(1.5),
+        })}
+      >
+        <Typography
+          variant="subtitle1"
+          sx={(theme) => ({
+            minWidth: { xs: "auto", sm: "180px" },
+            color: theme.palette.text.secondary,
+            fontWeight: 500,
+            marginBottom: { xs: theme.spacing(0.5), sm: 0 },
+          })}
+        >
+          University Interested
+        </Typography>
+        <Typography
+          variant="body1"
+          sx={{ alignSelf: "center", color: "text.primary" }}
+        >
+          :
+        </Typography>
+      </Box>
+      <Box sx={{ ml: { xs: 0, sm: 3 }, mr: 0, mb: 2 }}>
         <SelectionBox
           groupClass="mb-3 selectbox mui-selection-box"
           groupId="uniInterested"
-          value={props.university_interested}
+          value={university_interested}
           onChange={(val) => {
-            props.dispatchFunction({
+            dispatchFunction({
               type: "university_interested",
               value: val,
             });
@@ -247,17 +517,39 @@ function ApplicantDetails(props) {
         />
       </Box>
 
-      <DetailRow>
-        <DetailLabel>Intake Interested</DetailLabel>
-        <DetailValue sx={{ alignSelf: "center" }}>:</DetailValue>
-      </DetailRow>
-      <Box sx={{ ml: 3, mr: 0, mb: 2 }}>
+      <Box
+        sx={(theme) => ({
+          display: "flex",
+          flexDirection: { xs: "column", sm: "row" },
+          alignItems: "flex-start",
+          marginBottom: theme.spacing(1.5),
+        })}
+      >
+        <Typography
+          variant="subtitle1"
+          sx={(theme) => ({
+            minWidth: { xs: "auto", sm: "180px" },
+            color: theme.palette.text.secondary,
+            fontWeight: 500,
+            marginBottom: { xs: theme.spacing(0.5), sm: 0 },
+          })}
+        >
+          Intake Interested
+        </Typography>
+        <Typography
+          variant="body1"
+          sx={{ alignSelf: "center", color: "text.primary" }}
+        >
+          :
+        </Typography>
+      </Box>
+      <Box sx={{ ml: { xs: 0, sm: 3 }, mr: 0, mb: 2 }}>
         <SelectionBox
           groupClass="mb-3 selectbox mui-selection-box"
           groupId="intakeInterested"
-          value={props.intake_interested}
+          value={intake_interested}
           onChange={(val) => {
-            props.dispatchFunction({
+            dispatchFunction({
               type: "intake_interested",
               value: val,
             });
@@ -265,22 +557,44 @@ function ApplicantDetails(props) {
           name="intakeInterested"
           url="intakes/"
           isSearch={true}
-          objKey="it's different"
+          objKey="it's different" // This key might need adjustment based on actual API response
           placeholder="Select from options"
         />
       </Box>
 
-      <DetailRow>
-        <DetailLabel>Level Applying For</DetailLabel>
-        <DetailValue sx={{ alignSelf: "center" }}>:</DetailValue>
-      </DetailRow>
-      <Box sx={{ ml: 3, mr: 0, mb: 2 }}>
+      <Box
+        sx={(theme) => ({
+          display: "flex",
+          flexDirection: { xs: "column", sm: "row" },
+          alignItems: "flex-start",
+          marginBottom: theme.spacing(1.5),
+        })}
+      >
+        <Typography
+          variant="subtitle1"
+          sx={(theme) => ({
+            minWidth: { xs: "auto", sm: "180px" },
+            color: theme.palette.text.secondary,
+            fontWeight: 500,
+            marginBottom: { xs: theme.spacing(0.5), sm: 0 },
+          })}
+        >
+          Level Applying For
+        </Typography>
+        <Typography
+          variant="body1"
+          sx={{ alignSelf: "center", color: "text.primary" }}
+        >
+          :
+        </Typography>
+      </Box>
+      <Box sx={{ ml: { xs: 0, sm: 3 }, mr: 0, mb: 2 }}>
         <SelectionBox
           groupClass="mb-3 selectbox mui-selection-box"
           groupId="levelApplying"
-          value={props.level_applying_for}
+          value={level_applying_for}
           onChange={(val) => {
-            props.dispatchFunction({
+            dispatchFunction({
               type: "level_applying_for",
               value: val,
             });
@@ -288,54 +602,117 @@ function ApplicantDetails(props) {
           name="levelApplying"
           url="courselevels/"
           isSearch={true}
-          objKey="levels"
+          objKey="levels" // This key might need adjustment based on actual API response
           placeholder="Select from options"
         />
       </Box>
 
-      <DetailRow>
-        <DetailLabel>Course Interested</DetailLabel>
-        <DetailValue sx={{ alignSelf: "center" }}>:</DetailValue>
-      </DetailRow>
-      <Box sx={{ ml: 3, mr: 0, mb: 2 }}>
+      <Box
+        sx={(theme) => ({
+          display: "flex",
+          flexDirection: { xs: "column", sm: "row" },
+          alignItems: "flex-start",
+          marginBottom: theme.spacing(1.5),
+        })}
+      >
+        <Typography
+          variant="subtitle1"
+          sx={(theme) => ({
+            minWidth: { xs: "auto", sm: "180px" },
+            color: theme.palette.text.secondary,
+            fontWeight: 500,
+            marginBottom: { xs: theme.spacing(0.5), sm: 0 },
+          })}
+        >
+          Course Interested
+        </Typography>
+        <Typography
+          variant="body1"
+          sx={{ alignSelf: "center", color: "text.primary" }}
+        >
+          :
+        </Typography>
+      </Box>
+      <Box sx={{ ml: { xs: 0, sm: 3 }, mr: 0, mb: 2 }}>
         <SelectionBox
           groupClass="mb-3 selectbox mui-selection-box"
           groupId="courseIntersted"
-          value={props.course_interested}
+          value={course_interested}
           onChange={(val) => {
-            props.dispatchFunction({
+            dispatchFunction({
               type: "course_interested",
               value: val,
             });
           }}
           name="courseInterested"
           url={
-            props.university_interested && props.level_applying_for
-              ? `courseslists/?university=${props.university_interested}&course_levels=${props.level_applying_for}`
+            university_interested && level_applying_for
+              ? `courseslists/?university=${university_interested}&course_levels=${level_applying_for}`
               : ""
           }
           isSearch={true}
           objKey="course_name"
           placeholder={
-            props.university_interested && props.level_applying_for
+            university_interested && level_applying_for
               ? "Select from options"
               : "Select University, Intake & Course Level to load the courses"
           }
         />
       </Box>
 
-      <DetailRow>
-        <DetailLabel>SOP</DetailLabel>
-        <DetailValue sx={{ alignSelf: "center" }}>:</DetailValue>
-      </DetailRow>
-      <Box sx={{ ml: 3, mr: 0, mb: 2 }}>
-        <UploadBox>
+      <Box
+        sx={(theme) => ({
+          display: "flex",
+          flexDirection: { xs: "column", sm: "row" },
+          alignItems: "flex-start",
+          marginBottom: theme.spacing(1.5),
+        })}
+      >
+        <Typography
+          variant="subtitle1"
+          sx={(theme) => ({
+            minWidth: { xs: "auto", sm: "180px" },
+            color: theme.palette.text.secondary,
+            fontWeight: 500,
+            marginBottom: { xs: theme.spacing(0.5), sm: 0 },
+          })}
+        >
+          SOP
+        </Typography>
+        <Typography
+          variant="body1"
+          sx={{ alignSelf: "center", color: "text.primary" }}
+        >
+          :
+        </Typography>
+      </Box>
+      <Box sx={{ ml: { xs: 0, sm: 3 }, mr: 0, mb: 2 }}>
+        {/* Replaced UploadBox with direct Box component */}
+        <Box
+          sx={(theme) => ({
+            backgroundColor: theme.palette.background.paper,
+            borderRadius: theme.shape.borderRadius,
+            padding: theme.spacing(2),
+            marginBottom: theme.spacing(2),
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            minHeight: 80,
+            cursor: "pointer",
+            transition: "all 0.2s ease",
+            border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
+            "&:hover": {
+              backgroundColor: alpha(theme.palette.primary.light, 0.1),
+            },
+          })}
+        >
           <FileUpload
-            appId={props.appId}
+            appId={appId}
             uploadId="Sop"
             isEdit={true}
             onChange={(val) => {
-              props.dispatchFunction({
+              dispatchFunction({
                 type: "sop",
                 value: val,
               });
@@ -345,9 +722,17 @@ function ApplicantDetails(props) {
             fieldName="sopFileIp"
             minUploadSize="0.005"
             maxUploadSize="10"
-            afile={props.sop}
+            afile={sop}
           />
-          <UploadIcon>
+          {/* Replaced UploadIcon with direct Box component */}
+          <Box
+            sx={(theme) => ({
+              color: theme.palette.primary.main,
+              marginBottom: theme.spacing(1),
+              display: "flex",
+              justifyContent: "center",
+            })}
+          >
             <svg
               width="24"
               height="24"
@@ -377,11 +762,11 @@ function ApplicantDetails(props) {
                 strokeLinejoin="round"
               />
             </svg>
-          </UploadIcon>
+          </Box>
           <Typography variant="body2" color="text.secondary">
-            {props.sop ? "File uploaded" : "No file uploaded yet"}
+            {sop ? "File uploaded" : "No file uploaded yet"}
           </Typography>
-        </UploadBox>
+        </Box>
       </Box>
 
       {authData.user_type === "superuser" && (
@@ -393,18 +778,40 @@ function ApplicantDetails(props) {
             }}
           />
 
-          <DetailRow>
-            <DetailLabel>Assigned Users</DetailLabel>
-            <DetailValue sx={{ alignSelf: "center" }}>:</DetailValue>
-          </DetailRow>
-          <Box sx={{ ml: 3, mr: 0, mb: 2 }}>
+          <Box
+            sx={(theme) => ({
+              display: "flex",
+              flexDirection: { xs: "column", sm: "row" },
+              alignItems: "flex-start",
+              marginBottom: theme.spacing(1.5),
+            })}
+          >
+            <Typography
+              variant="subtitle1"
+              sx={(theme) => ({
+                minWidth: { xs: "auto", sm: "180px" },
+                color: theme.palette.text.secondary,
+                fontWeight: 500,
+                marginBottom: { xs: theme.spacing(0.5), sm: 0 },
+              })}
+            >
+              Assigned Users
+            </Typography>
+            <Typography
+              variant="body1"
+              sx={{ alignSelf: "center", color: "text.primary" }}
+            >
+              :
+            </Typography>
+          </Box>
+          <Box sx={{ ml: { xs: 0, sm: 3 }, mr: 0, mb: 2 }}>
             <SelectionBox
               groupClass="mb-3 selectbox mui-selection-box"
               groupId="assignedUser"
-              onChange={props.handleChange.bind(null, "assignedUser")}
+              onChange={handleChange.bind(null, "assignedUser")}
               name="assignedUser"
               url="userlist/"
-              value={props.assignedUser}
+              value={assignedUser}
               isSearch={true}
               objKey="username"
               placeholder="Select from options"
@@ -415,19 +822,41 @@ function ApplicantDetails(props) {
 
       {authData.user_type !== "Agent" && (
         <>
-          <DetailRow>
-            <DetailLabel>Status</DetailLabel>
-            <DetailValue sx={{ alignSelf: "center" }}>:</DetailValue>
-          </DetailRow>
-          <Box sx={{ ml: 3, mr: 0, mb: 2 }}>
+          <Box
+            sx={(theme) => ({
+              display: "flex",
+              flexDirection: { xs: "column", sm: "row" },
+              alignItems: "flex-start",
+              marginBottom: theme.spacing(1.5),
+            })}
+          >
+            <Typography
+              variant="subtitle1"
+              sx={(theme) => ({
+                minWidth: { xs: "auto", sm: "180px" },
+                color: theme.palette.text.secondary,
+                fontWeight: 500,
+                marginBottom: { xs: theme.spacing(0.5), sm: 0 },
+              })}
+            >
+              Status
+            </Typography>
+            <Typography
+              variant="body1"
+              sx={{ alignSelf: "center", color: "text.primary" }}
+            >
+              :
+            </Typography>
+          </Box>
+          <Box sx={{ ml: { xs: 0, sm: 3 }, mr: 0, mb: 2 }}>
             <SelectionBox
               groupClass="mb-3 selectbox mui-selection-box"
               groupId="status"
-              onChange={props.handleChange.bind(null, "status")}
+              onChange={handleChange.bind(null, "status")}
               name="status"
               url="appstatus/"
-              value={props.status}
-              objKey="App_status"
+              value={status}
+              objKey="App_status" // This key might need adjustment based on actual API response
               placeholder="Select from options"
             />
           </Box>
@@ -435,6 +864,6 @@ function ApplicantDetails(props) {
       )}
     </Box>
   );
-}
+};
 
 export default ApplicantDetails;

@@ -236,7 +236,6 @@ const WelcomeBanner = ({ userName }) => {
           backgroundSize: "20px 20px",
         }}
       />
-
       <Grid container spacing={2} alignItems="center" position="relative">
         <Grid item xs={12} md={8}>
           <Typography
@@ -2150,12 +2149,12 @@ const HomePage = () => {
         sx={{
           flexGrow: 1,
           p: { xs: 2, sm: 3, md: 4 },
-          minHeight: "100vh",
           bgcolor: "background.default",
           color: "text.primary",
           transition: "all 0.3s ease",
           backgroundImage: `radial-gradient(${customTheme.palette.primary.light}20 2px, transparent 0)`, // Using customTheme directly
           backgroundSize: "24px 24px",
+          borderRadius: "24px",
         }}
       >
         <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 3 }}></Box>

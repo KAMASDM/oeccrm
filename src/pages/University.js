@@ -212,9 +212,14 @@ function University() {
       <ThemeProvider theme={lavenderTheme}>
         <Box
           sx={{
-            p: { xs: 2, sm: 3 },
+            flexGrow: 1,
+            p: { xs: 2, sm: 3, md: 4 },
             bgcolor: "background.default",
-            minHeight: "calc(100vh - 64px)",
+            color: "text.primary",
+            transition: "all 0.3s ease",
+            backgroundImage: `radial-gradient(${lavenderTheme.palette.primary.light}20 2px, transparent 0)`, // Using customTheme directly
+            backgroundSize: "24px 24px",
+            borderRadius: "24px",
           }}
         >
           <Paper elevation={1} sx={{ p: { xs: 2, sm: 3 } }}>
